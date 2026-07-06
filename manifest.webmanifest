@@ -1,0 +1,31 @@
+{
+  "name": "SafeBlock",
+  "short_name": "SafeBlock",
+  "description": "PWA mobile-first de prévention, médiation communautaire et mise en sécurité.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050B18",
+  "theme_color": "#050B18",
+  "icons": [
+    {
+      "src": "./public/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Signaler une situation",
+      "short_name": "Signaler",
+      "url": "./#/app/report"
+    },
+    {
+      "name": "Mode urgence SOS",
+      "short_name": "SOS",
+      "url": "./#/app/sos"
+    }
+  ]
+}
