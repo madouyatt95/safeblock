@@ -16,6 +16,7 @@
   "shortcuts": [
     { "name": "Signaler une tension", "short_name": "Signaler", "url": "./?action=report", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
     { "name": "Carte du territoire", "short_name": "Carte", "url": "./?view=map", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "Canaux de médiation", "short_name": "Canaux", "url": "./?view=channels", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+    { "name": "Que faire maintenant ?", "short_name": "Me guider", "url": "./?action=guidance", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Kit hors connexion", "short_name": "Kit sécurité", "url": "./?action=offline-kit", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }

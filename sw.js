@@ -1,5 +1,5 @@
-const CACHE = "lien-v4.4-prevention";
-const ASSETS = ["./", "./index.html", "./styles.css?v=4.4", "./app.js?v=4.4", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
+const CACHE = "lien-v4.5-autonomy";
+const ASSETS = ["./", "./index.html", "./styles.css?v=4.5", "./app.js?v=4.5", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));

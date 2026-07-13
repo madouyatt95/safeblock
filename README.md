@@ -37,6 +37,15 @@ Le dépôt est configuré comme site statique Vercel. Chaque push sur la branche
 - modération confidentielle des messages et journal d'examen ;
 - réglages d'accessibilité : texte, contraste, réduction des mouvements, français simplifié et usage à une main ;
 - indicateurs d'impact responsables sans classement de quartier ;
+- assistant « Que faire maintenant ? » avec réponses sans confrontation ;
+- plan personnel de sécurité conservé uniquement sur l'appareil ;
+- frein anti-rumeur qui évalue les risques de partage sans prétendre vérifier la vérité ;
+- kit hors connexion et préparation locale des signalements quand le réseau disparaît ;
+- parcours guidé d'installation de la PWA ;
+- confirmation « Je suis en sécurité » avec arrêt du partage et demande de suivi ;
+- scénarios d'entraînement sans score ni compétition ;
+- centre de micro-formations avec progression locale privée ;
+- consignes essentielles en français, français facile, anglais et arabe avec lecture vocale ;
 - gestion locale des permissions, téléchargement et suppression des données ;
 - manifeste PWA, icônes, raccourcis et cache hors ligne.
 
