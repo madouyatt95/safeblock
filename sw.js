@@ -1,5 +1,5 @@
-const CACHE = "lien-v3.4-complete";
-const ASSETS = ["./", "./index.html", "./styles.css?v=3.3", "./app.js?v=3.4", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
+const CACHE = "lien-v3.6-mobile";
+const ASSETS = ["./", "./index.html", "./styles.css?v=3.6", "./app.js?v=3.4", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
