@@ -1,31 +1,21 @@
 {
-  "name": "SafeBlock",
-  "short_name": "SafeBlock",
-  "description": "PWA mobile-first de prévention, médiation communautaire et mise en sécurité.",
-  "start_url": ".",
-  "scope": ".",
+  "name": "LIEN — Prévenir ensemble",
+  "short_name": "LIEN",
+  "description": "La plateforme locale de prévention, d'apaisement et de médiation pour habitants, jeunes, familles et acteurs de terrain.",
+  "start_url": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#050B18",
-  "theme_color": "#050B18",
+  "background_color": "#f4f5ef",
+  "theme_color": "#0b1720",
+  "lang": "fr",
+  "orientation": "portrait-primary",
   "icons": [
-    {
-      "src": "./public/icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
   "shortcuts": [
-    {
-      "name": "Signaler une situation",
-      "short_name": "Signaler",
-      "url": "./#/app/report"
-    },
-    {
-      "name": "Mode urgence SOS",
-      "short_name": "SOS",
-      "url": "./#/app/sos"
-    }
+    { "name": "Signaler une tension", "short_name": "Signaler", "url": "./?action=report", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Carte du territoire", "short_name": "Carte", "url": "./?view=map", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Canaux de médiation", "short_name": "Canaux", "url": "./?view=channels", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }

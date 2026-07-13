@@ -1,28 +1,235 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#050B18" />
-    <meta
-      name="description"
-      content="SafeBlock, PWA mobile-first de prévention, médiation communautaire et mise en sécurité."
-    />
-    <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="icon" href="./public/icons/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="./public/icons/icon.svg" />
-    <link rel="stylesheet" href="./src/styles.css" />
-    <title>SafeBlock</title>
-  </head>
-  <body>
-    <div id="app">
-      <section class="initial-loader" aria-label="Chargement SafeBlock">
-        <div class="brand-mark">Sb</div>
-        <h1>SafeBlock</h1>
-        <p>Prévenir • Apaiser • Protéger</p>
-        <span class="loading-line"><i></i></span>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0d171d" />
+  <meta name="description" content="LIEN, la plateforme locale de prévention, d'apaisement et de médiation." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3.3" />
+  <title>LIEN — Prévenir, apaiser, protéger</title>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Zm-3-10 2 2 4-4"/></symbol>
+    <symbol id="i-signal" viewBox="0 0 24 24"><path d="M12 8v5m0 4h.01M10.2 3.6 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.8 3.6a2 2 0 0 0-3.6 0Z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m7-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm13 10v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3.1 5.2 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9.1 11a16 16 0 0 0 4 4l1.3-1.3a2 2 0 0 1 2.1-.5c1 .4 2 .6 2.9.7a2 2 0 0 1 1.7 2Z"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 5 13 3h-2L9.5 5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4.5Z"/><circle cx="12" cy="13" r="4"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 11a7 7 0 0 0 14 0m-7 7v4m-4 0h8"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h3a3 3 0 0 0 3-3V8a3 3 0 0 1 3-3"/></symbol>
+    <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21h-4v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3v-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.5V3h4v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.1v4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 6.8L12 17l-6.3 3.5L7 13.7 2 9l7-.9 3-6Z"/></symbol>
+  </svg>
+
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#" data-view-link="home"><span class="brand-pulse"><i></i><i></i></span><b>LIEN</b></a>
+      <button class="side-profile" data-action="role-picker"><span class="avatar" data-user="initials">SM</span><span><small>Mon espace</small><strong data-user="role">Parent</strong></span><svg><use href="#i-chevron"/></svg></button>
+      <nav class="side-nav" aria-label="Navigation principale">
+        <button class="active" data-view-link="home"><svg><use href="#i-home"/></svg><span>Accueil</span></button>
+        <button data-view-link="map"><svg><use href="#i-map"/></svg><span>Carte</span><b>3</b></button>
+        <button data-view-link="channels"><svg><use href="#i-chat"/></svg><span>Canaux</span></button>
+        <button data-view-link="profile"><svg><use href="#i-user"/></svg><span>Mon profil</span></button>
+        <button data-view-link="intervention" data-role-access="professional"><svg><use href="#i-route"/></svg><span>Interventions</span></button>
+        <button data-view-link="admin" data-role-access="admin"><svg><use href="#i-dashboard"/></svg><span>Pilotage</span></button>
+      </nav>
+      <div class="side-safety"><svg><use href="#i-shield"/></svg><strong>Ne jamais intervenir seul·e</strong><p>Observer à distance, signaler et privilégier l’apaisement.</p></div>
+      <button class="sos-mini" data-action="sos"><span>SOS</span><small>Aide immédiate</small><svg><use href="#i-arrow"/></svg></button>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <a class="brand mobile-brand" href="#" data-view-link="home"><span class="brand-pulse"><i></i><i></i></span><b>LIEN</b></a>
+        <button class="territory"><svg><use href="#i-pin"/></svg><span>Commune des Lilas</span><svg><use href="#i-chevron"/></svg></button>
+        <div class="top-actions"><button class="top-sos" data-action="sos" aria-label="Aide SOS">SOS</button><button class="top-icon" data-action="notifications" aria-label="Notifications"><svg><use href="#i-bell"/></svg><i></i></button><button class="avatar top-avatar" data-action="role-picker" aria-label="Changer de rôle" data-user="initials">SM</button></div>
+      </header>
+
+      <section class="view active" data-view="home">
+        <div class="page-intro home-intro"><div><span class="eyebrow">Dimanche 13 juillet · 16h30</span><h1 data-user="greeting">Bonjour Samira <em>👋</em></h1><p data-user="subtitle">Votre quartier est calme. Restons attentifs ensemble.</p></div><button class="ghost-button desktop-only" data-action="role-picker"><span class="role-dot"></span><span data-user="role">Parent</span><svg><use href="#i-chevron"/></svg></button></div>
+
+        <div class="home-grid">
+          <article class="peace-card">
+            <div class="card-grid"></div><div class="neon-orb"></div>
+            <div class="peace-copy"><span class="live-pill"><i></i> Indice actualisé</span><h2>Tranquillité<br /><em data-score-label>Bonne</em></h2><p data-user="heroText">Les signaux sont en baisse. Deux médiations préventives sont actives aujourd’hui.</p><div class="confidence"><svg><use href="#i-shield"/></svg><span><strong>Fiabilité élevée</strong><small>31 observations · Mise à jour 16h25</small></span></div></div>
+            <div class="score-ring"><svg viewBox="0 0 140 140"><circle class="score-bg" cx="70" cy="70" r="57"/><circle class="score-progress" cx="70" cy="70" r="57"/></svg><div><strong data-score>82</strong><small>/100</small></div></div>
+            <div class="peace-stats"><span><strong>3</strong><small>signaux actifs</small></span><span><strong>2</strong><small>médiations</small></span><span><strong>−12%</strong><small>sur 7 jours</small></span></div>
+          </article>
+
+          <article class="trend-card white-card">
+            <div class="card-title"><div><span class="eyebrow">7 derniers jours</span><h3>Tendance locale</h3></div><span class="trend-down">−12%</span></div>
+            <svg class="line-chart" viewBox="0 0 430 150" preserveAspectRatio="none"><defs><linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#72e8ad" stop-opacity=".35"/><stop offset="1" stop-color="#72e8ad" stop-opacity="0"/></linearGradient></defs><path class="chart-area" d="M0 115 C40 106 50 66 90 79 S142 132 188 88 S245 44 285 64 S340 111 382 67 S416 50 430 53 V150 H0Z"/><path class="chart-line" d="M0 115 C40 106 50 66 90 79 S142 132 188 88 S245 44 285 64 S340 111 382 67 S416 50 430 53"/><circle cx="430" cy="53" r="6"/></svg>
+            <div class="chart-labels"><span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span></div>
+          </article>
+        </div>
+
+        <div class="section-title"><div><span class="eyebrow">À suivre</span><h2>Alertes actives</h2></div><button class="text-link" data-view-link="map">Voir sur la carte <svg><use href="#i-arrow"/></svg></button></div>
+        <div class="alert-strip" data-alert-strip>
+          <button class="alert-card amber" data-signal-id="s1"><span class="signal-dot"></span><span><small>À corroborer · 35 min</small><strong>Tensions verbales</strong><em>City-stade · Sentes</em></span><b>2</b><svg><use href="#i-chevron"/></svg></button>
+          <button class="alert-card blue" data-signal-id="s2"><span class="signal-dot"></span><span><small>Médiation en cours</small><strong>Différend entre groupes</strong><em>Square des Bruyères</em></span><b>4</b><svg><use href="#i-chevron"/></svg></button>
+          <button class="alert-card green" data-signal-id="s3"><span class="signal-dot"></span><span><small>Surveillance préventive</small><strong>Rumeur numérique</strong><em>Secteur Nord</em></span><b>1</b><svg><use href="#i-chevron"/></svg></button>
+        </div>
+
+        <div class="section-title"><div><span class="eyebrow">Actions rapides</span><h2 data-user="actionTitle">Agir simplement</h2></div></div>
+        <div class="quick-grid">
+          <button class="quick-action violet" data-action="contact-mediator"><span class="quick-num">01</span><span class="quick-icon"><svg><use href="#i-chat"/></svg></span><span><strong data-user="quick1">Parler à un médiateur</strong><small>Échange privé et confidentiel</small></span><svg><use href="#i-arrow"/></svg></button>
+          <button class="quick-action darkgreen" data-action="report"><span class="quick-num">02</span><span class="quick-icon"><svg><use href="#i-plus"/></svg></span><span><strong data-user="quick2">Signaler une situation</strong><small>Sans vous mettre en danger</small></span><svg><use href="#i-arrow"/></svg></button>
+          <button class="quick-action sand" data-view-link="map"><span class="quick-num">03</span><span class="quick-icon"><svg><use href="#i-map"/></svg></span><span><strong data-user="quick3">Trouver un lieu sûr</strong><small>3 lieux ouverts à proximité</small></span><svg><use href="#i-arrow"/></svg></button>
+        </div>
+
+        <div class="section-title"><div><span class="eyebrow">Aujourd’hui</span><h2>Activités locales</h2></div></div>
+        <div class="activity-list">
+          <article class="activity"><time><strong>17:30</strong><span>Aujourd’hui</span></time><span class="activity-icon mint"><svg><use href="#i-users"/></svg></span><div><span class="eyebrow">Maison de quartier</span><h3>Atelier « Dialoguer sans juger »</h3><p>Animé par l’association Passerelles · 8 places</p></div><button data-action="register">Participer</button></article>
+          <article class="activity"><time><strong>19:00</strong><span>Aujourd’hui</span></time><span class="activity-icon blue"><svg><use href="#i-chat"/></svg></span><div><span class="eyebrow">En ligne</span><h3>Temps d’échange entre parents</h3><p>Canal Parents · Modéré par Karim</p></div><button data-view-link="channels">Rejoindre</button></article>
+        </div>
       </section>
+
+      <section class="view map-view" data-view="map">
+        <div class="page-intro"><div><span class="eyebrow">Veille agrégée · positions protégées</span><h1>Carte du territoire</h1><p>Les zones sont volontairement généralisées pour protéger les personnes.</p></div><button class="primary-button" data-action="report"><svg><use href="#i-plus"/></svg> Signaler</button></div>
+        <div class="map-layout">
+          <article class="city-map" data-map>
+            <div class="map-top"><div class="map-search"><svg><use href="#i-pin"/></svg><span>Les Lilas, tous les quartiers</span></div><button data-action="locate" aria-label="Me localiser"><svg><use href="#i-route"/></svg></button></div>
+            <div class="map-filters" role="group" aria-label="Filtres de la carte"><button class="active" data-map-filter="all">Tout</button><button data-map-filter="calm">Calme</button><button data-map-filter="watch">Vigilance</button><button data-map-filter="tension">Tension</button><button data-map-filter="safe">Lieux sûrs</button></div>
+            <div class="map-canvas">
+              <svg class="roads" viewBox="0 0 900 600" preserveAspectRatio="none" aria-hidden="true"><path d="M-20 130C140 70 210 190 390 130S660 30 930 100M-40 400C130 300 250 410 400 370S650 260 930 330M120-20c70 160 10 260 80 380s160 150 120 280M530-30c-30 150 80 240 20 360s-30 190 50 300M760-20c-80 100-40 220-100 310s50 190 140 330"/><path class="minor" d="M0 250h900M0 500h900M350 0v600M700 0v600M60 40l760 520M820 10 90 580"/></svg>
+              <div class="heat heat-amber h1" data-map-type="watch"></div><div class="heat heat-red h2" data-map-type="tension"></div><div class="heat heat-green h3" data-map-type="calm"></div>
+              <button class="map-marker tension m1" data-signal-id="s1" data-map-type="tension" aria-label="Tension secteur Sentes"><span>!</span><i></i></button>
+              <button class="map-marker watch m2" data-signal-id="s2" data-map-type="watch" aria-label="Vigilance square des Bruyères"><span>2</span><i></i></button>
+              <button class="map-marker calm m3" data-signal-id="s3" data-map-type="calm" aria-label="Zone calme secteur Nord"><svg><use href="#i-check"/></svg><i></i></button>
+              <button class="safe-marker sm1" data-map-type="safe" data-safe-place="Maison de quartier"><svg><use href="#i-shield"/></svg><small>Refuge</small></button>
+              <button class="safe-marker sm2" data-map-type="safe" data-safe-place="Commerce partenaire"><svg><use href="#i-shield"/></svg><small>Ouvert</small></button>
+              <span class="district d1">LES SENTES</span><span class="district d2">CENTRE</span><span class="district d3">NORD</span>
+              <div class="map-user"><i></i><span>Vous</span></div>
+            </div>
+            <div class="map-legend"><span><i class="calm"></i>Calme</span><span><i class="watch"></i>Vigilance</span><span><i class="tension"></i>Tension</span><span><svg><use href="#i-shield"/></svg>Lieu sûr</span></div>
+          </article>
+          <aside class="map-panel">
+            <div class="panel-head"><div><span class="eyebrow">À proximité</span><h2>3 situations</h2></div><button data-action="map-settings"><svg><use href="#i-settings"/></svg></button></div>
+            <div class="map-signal-list">
+              <button data-signal-id="s1"><i class="tension"></i><span><small>À corroborer</small><strong>Tensions verbales</strong><em>Il y a 35 min · zone 300 m</em></span><svg><use href="#i-chevron"/></svg></button>
+              <button data-signal-id="s2"><i class="watch"></i><span><small>Médiation en cours</small><strong>Différend entre groupes</strong><em>Il y a 1h20 · zone 500 m</em></span><svg><use href="#i-chevron"/></svg></button>
+              <button data-signal-id="s3"><i class="calm"></i><span><small>Situation stabilisée</small><strong>Rumeur numérique</strong><em>Suivi préventif</em></span><svg><use href="#i-chevron"/></svg></button>
+            </div>
+            <div class="safe-card"><span><svg><use href="#i-shield"/></svg></span><div><small>Lieu sûr le plus proche</small><strong>Maison de quartier</strong><p>4 min à pied · Ouvert jusqu’à 21h</p></div><button data-action="safe-route"><svg><use href="#i-route"/></svg></button></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view channels-view" data-view="channels">
+        <div class="page-intro"><div><span class="eyebrow">Espaces modérés</span><h1>Canaux & médiation</h1><p>Échangez dans un cadre sécurisé, sans exposition publique.</p></div><button class="primary-button" data-action="new-discussion"><svg><use href="#i-plus"/></svg> Discussion</button></div>
+        <div class="messenger">
+          <aside class="channel-list"><div class="channel-search">Rechercher un canal…</div><span class="list-label">MES CANAUX</span>
+            <button class="active" data-channel="quartier"><span class="channel-icon lime">#</span><span><strong>Canal quartier</strong><small>12 nouveaux messages</small></span><b>12</b></button>
+            <button data-channel="parents"><span class="channel-icon purple">P</span><span><strong>Canal parents</strong><small>Karim : rendez-vous à 18h…</small></span></button>
+            <button data-channel="jeunes"><span class="channel-icon blue">J</span><span><strong>Canal jeunes</strong><small>Espace modéré · 24 membres</small></span></button>
+            <button data-channel="mediateurs" data-role-access="professional"><span class="channel-icon coral">M</span><span><strong>Groupe médiateurs</strong><small>3 membres en ligne</small></span><i></i></button>
+            <button data-channel="associations"><span class="channel-icon sand">A</span><span><strong>Canal associations</strong><small>Programme de la semaine</small></span></button>
+            <button data-channel="commercants"><span class="channel-icon green">C</span><span><strong>Commerçants refuges</strong><small>8 établissements ouverts</small></span></button>
+          </aside>
+          <section class="chat-panel">
+            <div class="mobile-channel-tabs" aria-label="Changer de canal"><button class="active" data-channel="quartier">Quartier</button><button data-channel="parents">Parents</button><button data-channel="jeunes">Jeunes</button><button data-channel="mediateurs" data-role-access="professional">Médiateurs</button><button data-channel="associations">Associations</button><button data-channel="commercants">Commerçants</button></div>
+            <header class="chat-head"><div class="channel-avatar" data-channel-avatar>#</div><div><strong data-channel-title>Canal quartier</strong><small><i></i> 38 membres · Modéré par Aïcha</small></div><div class="chat-actions"><button data-action="voice-call" aria-label="Appel vocal"><svg><use href="#i-phone"/></svg></button><button data-action="video-call" aria-label="Visioconférence"><svg><use href="#i-video"/></svg></button><button data-action="participants" aria-label="Participants"><svg><use href="#i-users"/></svg></button></div></header>
+            <div class="safety-banner"><svg><use href="#i-shield"/></svg><span><strong>Espace modéré</strong> N’indiquez jamais l’identité d’un mineur ni une position précise.</span></div>
+            <div class="messages" data-messages></div>
+            <form class="message-form" data-message-form><button type="button" data-action="attach" aria-label="Joindre un fichier"><svg><use href="#i-plus"/></svg></button><input type="text" name="message" placeholder="Écrire un message respectueux…" autocomplete="off" /><button type="button" class="voice-message" data-action="voice-message" aria-label="Message vocal"><svg><use href="#i-mic"/></svg></button><button type="button" class="send-message" data-action="send-message" aria-label="Envoyer"><svg><use href="#i-arrow"/></svg></button></form>
+          </section>
+        </div>
+      </section>
+
+      <section class="view profile-view" data-view="profile">
+        <div class="page-intro"><div><span class="eyebrow">Espace personnel</span><h1>Mon profil</h1><p>Vos informations et contributions ne sont jamais affichées publiquement.</p></div><button class="ghost-button" data-action="settings"><svg><use href="#i-settings"/></svg> Paramètres</button></div>
+        <div class="profile-layout">
+          <article class="profile-hero"><div class="profile-cover"></div><div class="big-avatar" data-user="initials">SM</div><div class="profile-identity"><span class="verified-pill"><svg><use href="#i-shield"/></svg><span data-user="verification">Profil citoyen</span></span><h2 data-user="name">Samira M.</h2><p><span data-user="role">Parent</span> · Quartier des Sentes</p><button data-action="role-picker">Changer d’espace</button></div><div class="profile-score"><strong>320</strong><span>contributions utiles</span><small>Score privé · aucun classement public</small></div></article>
+          <section class="profile-content">
+            <div class="stats-grid"><article><span class="stat-icon coral"><svg><use href="#i-signal"/></svg></span><strong>7</strong><small>Signalements suivis</small></article><article><span class="stat-icon mint"><svg><use href="#i-check"/></svg></span><strong>5</strong><small>Situations résolues</small></article><article><span class="stat-icon purple"><svg><use href="#i-users"/></svg></span><strong>3</strong><small>Activités suivies</small></article></div>
+            <div class="section-title compact"><div><span class="eyebrow">Reconnaissance</span><h2>Mes badges</h2></div><button class="text-link" data-action="badges">Voir les critères</button></div>
+            <div class="badge-grid"><article><span class="badge-icon gold"><svg><use href="#i-star"/></svg></span><strong>Ambassadeur</strong><small>Formation validée</small></article><article><span class="badge-icon green"><svg><use href="#i-shield"/></svg></span><strong>Citoyen vigilant</strong><small>3 contributions utiles</small></article><article class="locked"><span class="badge-icon"><svg><use href="#i-lock"/></svg></span><strong>Référent jeunesse</strong><small>Formation requise</small></article></div>
+            <div class="section-title compact"><div><span class="eyebrow">Historique privé</span><h2>Mes activités</h2></div></div>
+            <div class="history-list"><article><i class="green"></i><div><strong>Signalement #LN-2048 résolu</strong><small>Rumeur numérique · Hier à 19h40</small></div><span>Résolu</span></article><article><i class="blue"></i><div><strong>Atelier « Dialoguer sans juger »</strong><small>Inscription confirmée · 16 juillet</small></div><span>À venir</span></article><article><i class="amber"></i><div><strong>Contribution ajoutée</strong><small>Situation du city-stade · Aujourd’hui</small></div><span>En cours</span></article></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view intervention-view" data-view="intervention">
+        <div class="page-intro"><div><span class="eyebrow">Accès professionnel vérifié</span><h1>Interventions</h1><p>Coordonner les équipes sans exposer les personnes concernées.</p></div><button class="primary-button" data-action="new-intervention"><svg><use href="#i-plus"/></svg> Nouvelle coordination</button></div>
+        <div class="intervention-grid">
+          <article class="live-intervention"><div class="live-head"><span class="live-pill coral"><i></i> En cours</span><span>#INT-382</span></div><h2>Square des Bruyères</h2><p>Différend entre deux groupes · Niveau vigilance</p><div class="intervention-timeline"><span class="done"><i></i><small>Signal reçu</small><b>15:06</b></span><span class="done"><i></i><small>Validé</small><b>15:14</b></span><span class="active"><i></i><small>Équipe en route</small><b>15:21</b></span><span><i></i><small>Sur place</small><b>—</b></span><span><i></i><small>Compte rendu</small><b>—</b></span></div><div class="team-row"><div class="team-faces"><span>KB</span><span>AD</span><span>YM</span></div><div><strong>3 intervenants mobilisés</strong><small>Karim arrive dans environ 4 min</small></div></div><div class="intervention-actions"><button class="primary-button" data-action="join-intervention">Rejoindre l’équipe</button><button class="ghost-button" data-action="open-ops-chat"><svg><use href="#i-chat"/></svg> Canal privé</button></div></article>
+          <article class="intervention-map"><div class="mini-map-grid"></div><div class="mini-route"></div><span class="agent a1">KB<i></i></span><span class="agent a2">AD<i></i></span><span class="intervention-pin"><svg><use href="#i-signal"/></svg></span><div class="eta-card"><svg><use href="#i-route"/></svg><span><small>Temps estimé</small><strong>4 minutes</strong></span></div></article>
+        </div>
+        <div class="section-title"><div><span class="eyebrow">Aujourd’hui</span><h2>Historique opérationnel</h2></div><button class="text-link" data-action="export-interventions">Exporter</button></div>
+        <div class="ops-table"><div class="table-row header"><span>Situation</span><span>Quartier</span><span>Équipe</span><span>Statut</span><span>Durée</span></div><div class="table-row"><span><strong>Rumeur numérique</strong><small>#INT-381</small></span><span>Secteur Nord</span><span>AD · YM</span><span><b class="status resolved">Résolu</b></span><span>38 min</span></div><div class="table-row"><span><strong>Tensions verbales</strong><small>#INT-380</small></span><span>Les Sentes</span><span>KB</span><span><b class="status monitoring">Suivi</b></span><span>1h12</span></div></div>
+      </section>
+
+      <section class="view admin-view" data-view="admin">
+        <div class="page-intro"><div><span class="eyebrow">Collectivité · Vue agrégée</span><h1>Pilotage territorial</h1><p>Décider, coordonner et mesurer sans publier de données sensibles.</p></div><div class="page-actions"><button class="ghost-button" data-action="export-csv"><svg><use href="#i-download"/></svg> CSV</button><button class="primary-button" data-action="print-report"><svg><use href="#i-download"/></svg> Rapport PDF</button></div></div>
+        <div class="admin-kpis"><article><span>Signalements reçus</span><strong>46</strong><small><b>+8%</b> sur 30 jours</small></article><article><span>Confirmés</span><strong>18</strong><small>39% des signaux</small></article><article><span>Temps moyen</span><strong>12 min</strong><small><b>−4 min</b> ce mois</small></article><article><span>Situations résolues</span><strong>91%</strong><small>Objectif : 85%</small></article></div>
+        <div class="admin-grid">
+          <article class="validation-queue white-card"><div class="panel-head"><div><span class="eyebrow">File prioritaire</span><h2>À valider</h2></div><span class="queue-count">4 signaux</span></div><div class="queue-list"><article data-queue-item><i class="severity high"></i><div><small>Il y a 6 min · Les Sentes</small><strong>Possibles menaces verbales</strong><p>2 corroborations · Aucun média public</p></div><button data-action="validate-signal">Valider</button><button data-action="dismiss-signal" aria-label="Classer non pertinent"><svg><use href="#i-close"/></svg></button></article><article data-queue-item><i class="severity medium"></i><div><small>Il y a 18 min · Centre</small><strong>Dégradation de mobilier</strong><p>1 observation · 1 photographie protégée</p></div><button data-action="validate-signal">Valider</button><button data-action="dismiss-signal" aria-label="Classer non pertinent"><svg><use href="#i-close"/></svg></button></article></div></article>
+          <article class="admin-chart white-card"><div class="panel-head"><div><span class="eyebrow">30 derniers jours</span><h2>Évolution</h2></div><select aria-label="Période"><option>30 jours</option><option>7 jours</option><option>12 mois</option></select></div><div class="bar-chart"><span style="--h:48%"><i>18</i></span><span style="--h:68%"><i>25</i></span><span style="--h:54%"><i>20</i></span><span style="--h:82%"><i>31</i></span><span style="--h:62%"><i>23</i></span><span style="--h:74%"><i>28</i></span><span style="--h:42%"><i>16</i></span></div><div class="bar-labels"><span>S1</span><span>S2</span><span>S3</span><span>S4</span><span>S5</span><span>S6</span><span>S7</span></div></article>
+        </div>
+        <div class="section-title"><div><span class="eyebrow">Administration</span><h2>Gestion opérationnelle</h2></div></div>
+        <div class="management-grid"><button data-action="manage-users"><span class="manage-icon blue"><svg><use href="#i-users"/></svg></span><span><strong>Utilisateurs</strong><small>1 284 comptes · 14 vérifications</small></span><svg><use href="#i-chevron"/></svg></button><button data-action="manage-mediators"><span class="manage-icon green"><svg><use href="#i-shield"/></svg></span><span><strong>Médiateurs</strong><small>18 actifs · 6 disponibles</small></span><svg><use href="#i-chevron"/></svg></button><button data-action="manage-districts"><span class="manage-icon purple"><svg><use href="#i-map"/></svg></span><span><strong>Quartiers</strong><small>7 secteurs configurés</small></span><svg><use href="#i-chevron"/></svg></button><button data-action="manage-safe"><span class="manage-icon coral"><svg><use href="#i-pin"/></svg></span><span><strong>Lieux sûrs</strong><small>12 lieux · 2 à renouveler</small></span><svg><use href="#i-chevron"/></svg></button><button data-action="moderation"><span class="manage-icon sand"><svg><use href="#i-chat"/></svg></span><span><strong>Modération</strong><small>3 contenus à examiner</small></span><svg><use href="#i-chevron"/></svg></button><button data-action="audit-log"><span class="manage-icon dark"><svg><use href="#i-lock"/></svg></span><span><strong>Journal sécurisé</strong><small>Accès et traitements tracés</small></span><svg><use href="#i-chevron"/></svg></button></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navigation mobile"><button class="active" data-view-link="home"><svg><use href="#i-home"/></svg><span>Accueil</span></button><button data-view-link="map"><svg><use href="#i-map"/></svg><span>Carte</span><b>3</b></button><button class="main-report" data-action="report" aria-label="Signaler"><span><svg><use href="#i-plus"/></svg></span></button><button data-view-link="channels"><svg><use href="#i-chat"/></svg><span>Canaux</span></button><button data-view-link="profile"><svg><use href="#i-user"/></svg><span>Profil</span></button></nav>
+  </div>
+
+  <div class="backdrop" data-backdrop></div>
+
+  <section class="onboarding" data-onboarding role="dialog" aria-modal="true" aria-labelledby="onboard-title">
+    <div class="onboard-art"><a class="brand light"><span class="brand-pulse"><i></i><i></i></span><b>LIEN</b></a><div class="onboard-radar"><i></i><i></i><i></i><span><svg><use href="#i-users"/></svg></span></div><div><span class="live-pill"><i></i> Prévenir ensemble</span><h2>Un lien peut<br />tout <em>changer.</em></h2><p>Une plateforme commune aux habitants, jeunes, familles et acteurs de terrain.</p></div></div>
+    <div class="onboard-content">
+      <div class="onboard-progress"><i class="active"></i><i></i><i></i></div>
+      <div class="onboard-step active" data-onboard-step="1"><span class="eyebrow">Bienvenue</span><h1 id="onboard-title">Agir sans s’exposer.</h1><p>LIEN vous aide à repérer, dialoguer et mobiliser les bonnes personnes avant qu’une situation ne dégénère.</p><div class="principles"><span><svg><use href="#i-shield"/></svg><strong>Confidentiel</strong><small>Vos informations sont protégées</small></span><span><svg><use href="#i-users"/></svg><strong>Collectif</strong><small>Chaque acteur a sa juste place</small></span><span><svg><use href="#i-lock"/></svg><strong>Sans confrontation</strong><small>Ne jamais intervenir seul·e</small></span></div><button class="primary-button wide" data-onboard-next>Commencer <svg><use href="#i-arrow"/></svg></button></div>
+      <div class="onboard-step" data-onboard-step="2"><span class="eyebrow">Votre espace</span><h1>Quel est votre rôle ?</h1><p>Vous pourrez changer d’espace plus tard. Les rôles professionnels seront vérifiés.</p><div class="onboard-roles" data-role-options></div><button class="primary-button wide" data-onboard-next disabled>Continuer <svg><use href="#i-arrow"/></svg></button></div>
+      <div class="onboard-step" data-onboard-step="3"><span class="eyebrow">Votre territoire</span><h1>Derniers réglages.</h1><p>Les permissions sensibles ne seront demandées qu’au moment où elles sont utiles.</p><label class="field"><span>Commune ou territoire</span><span class="input-icon"><svg><use href="#i-pin"/></svg><input type="text" value="Commune des Lilas" /></span></label><label class="field"><span>Prénom ou pseudonyme</span><input type="text" data-onboard-name value="Samira" /></label><label class="consent-check"><input type="checkbox" data-charter /><i><svg><use href="#i-check"/></svg></i><span><strong>J’accepte la charte de sécurité</strong><small>Je m’engage à ne pas confronter, identifier ou exposer une personne.</small></span></label><button class="primary-button wide" data-onboard-finish disabled>Entrer dans LIEN <svg><use href="#i-arrow"/></svg></button><button class="skip-link" data-onboard-reset>Revenir au choix du rôle</button></div>
     </div>
-    <script type="module" src="./src/main.js"></script>
-  </body>
+  </section>
+
+  <section class="sheet report-sheet" data-sheet="report" role="dialog" aria-modal="true" aria-labelledby="report-title">
+    <button class="sheet-close" data-close-sheet aria-label="Fermer"><svg><use href="#i-close"/></svg></button><div class="sheet-steps"><i class="active"></i><i></i><i></i><i></i></div>
+    <div class="report-step active" data-report-step="1"><span class="eyebrow">Étape 1 sur 4</span><h2 id="report-title">Que se passe-t-il ?</h2><p>Choisissez la situation la plus proche. En cas de danger immédiat, utilisez SOS.</p><div class="report-types"><button data-report-type="Tension / altercation"><span>01</span><strong>Tension / altercation</strong><small>Dispute, menace ou situation qui monte</small></button><button data-report-type="Regroupement préoccupant"><span>02</span><strong>Situation préoccupante</strong><small>Regroupement inhabituel pouvant évoluer</small></button><button data-report-type="Insulte / harcèlement"><span>03</span><strong>Insulte / harcèlement</strong><small>Sur place ou en ligne</small></button><button data-report-type="Dégradation"><span>04</span><strong>Dégradation</strong><small>Mobilier ou espace public</small></button><button class="danger-choice" data-report-type="Violence"><span>05</span><strong>Violence en cours</strong><small>Accès rapide à l’aide immédiate</small></button><button data-report-type="Autre situation"><span>06</span><strong>Autre situation</strong><small>Vous pourrez préciser ensuite</small></button></div><button class="primary-button wide" data-report-next disabled>Continuer <svg><use href="#i-arrow"/></svg></button></div>
+    <div class="report-step" data-report-step="2"><span class="eyebrow">Étape 2 sur 4</span><h2>Décrivez sans vous exposer.</h2><p>Ne citez pas le nom d’un mineur et ne vous rapprochez pas pour obtenir une image.</p><label class="field"><span>Description</span><textarea data-report-description rows="4" placeholder="Ce que vous avez observé, à distance…"></textarea></label><div class="media-grid"><button data-media="photo"><svg><use href="#i-camera"/></svg><span><strong>Photo</strong><small>Visages floutés</small></span></button><button data-media="video"><svg><use href="#i-video"/></svg><span><strong>Vidéo courte</strong><small>Depuis votre appareil</small></span></button><button data-media="audio"><svg><use href="#i-mic"/></svg><span><strong>Note audio</strong><small>Appuyer pour enregistrer</small></span></button></div><input class="hidden-file" type="file" accept="image/*" capture="environment" data-file="photo" /><input class="hidden-file" type="file" accept="video/*" capture="environment" data-file="video" /><div class="attachments" data-attachments></div><button class="primary-button wide" data-report-next>Continuer <svg><use href="#i-arrow"/></svg></button></div>
+    <div class="report-step" data-report-step="3"><span class="eyebrow">Étape 3 sur 4</span><h2>Où se situe la zone ?</h2><p>La position publique sera automatiquement généralisée.</p><label class="field"><span>Lieu approximatif</span><span class="input-icon"><svg><use href="#i-pin"/></svg><input data-report-location type="text" placeholder="Ex. city-stade, secteur Sentes" /></span></label><button class="location-button" data-action="use-location"><svg><use href="#i-route"/></svg><span><strong>Utiliser ma position actuelle</strong><small>Autorisation demandée une seule fois</small></span><b>Localiser</b></button><label class="toggle"><span><strong>Mode confidentiel</strong><small>Votre identité n’est visible que par les professionnels habilités</small></span><input type="checkbox" data-report-anonymous checked /><i></i></label><label class="toggle"><span><strong>Autoriser un médiateur à me recontacter</strong><small>Vous pourrez retirer cet accord à tout moment</small></span><input type="checkbox" data-report-contact checked /><i></i></label><button class="primary-button wide" data-report-next>Vérifier le signalement <svg><use href="#i-arrow"/></svg></button></div>
+    <div class="report-step" data-report-step="4"><div class="success-icon"><svg><use href="#i-check"/></svg></div><span class="eyebrow">Signal transmis pour validation</span><h2>Merci d’avoir créé du lien.</h2><p>Le signalement n’est pas encore une alerte publique. Un médiateur va le vérifier et rechercher d’éventuelles corroborations.</p><div class="reference-card"><svg><use href="#i-lock"/></svg><span><strong data-report-reference>#LN-2049</strong><small>Référence confidentielle · statut : en attente</small></span></div><button class="primary-button wide" data-close-sheet>Suivre mon signalement</button></div>
+  </section>
+
+  <section class="sheet signal-sheet" data-sheet="signal" role="dialog" aria-modal="true" aria-labelledby="signal-title"><button class="sheet-close" data-close-sheet aria-label="Fermer"><svg><use href="#i-close"/></svg></button><div class="signal-sheet-status"><i data-detail-dot></i><span data-detail-status>À corroborer</span></div><h2 id="signal-title" data-detail-title>Tensions verbales</h2><p class="signal-zone"><svg><use href="#i-pin"/></svg><span data-detail-zone>City-stade · zone approximative de 300 m</span></p><div class="detail-safety"><svg><use href="#i-shield"/></svg><span><strong>Position protégée</strong><small>Aucune personne ni adresse précise n’est affichée.</small></span></div><div class="detail-stats"><span><strong data-detail-confirms>2</strong><small>corroborations</small></span><span><strong>35 min</strong><small>dernière activité</small></span><span><strong>1</strong><small>médiateur informé</small></span></div><div class="corroborate"><span class="eyebrow">Pouvez-vous apporter une information ?</span><div><button data-action="corroborate"><svg><use href="#i-eye"/></svg> J’observe aussi</button><button data-action="ended"><svg><use href="#i-check"/></svg> Situation terminée</button></div></div><form class="comment-form" data-comment-form><label class="field"><span>Précision confidentielle</span><textarea name="comment" rows="3" placeholder="Information utile pour un médiateur…"></textarea></label><button class="primary-button wide" type="button" data-action="submit-comment">Transmettre au médiateur</button></form><div class="comments" data-comments><article><span>KB</span><div><strong>Médiateur Karim · 16:02</strong><p>Signal reçu. Une équipe de proximité vérifie la situation à distance.</p></div></article></div></section>
+
+  <section class="sos-screen" data-sos role="dialog" aria-modal="true" aria-labelledby="sos-title"><button class="sos-close" data-action="close-sos" aria-label="Fermer"><svg><use href="#i-close"/></svg></button><div class="sos-idle" data-sos-state="idle"><span class="sos-label">AIDE IMMÉDIATE</span><h2 id="sos-title">Êtes-vous en sécurité ?</h2><p>Éloignez-vous de la situation. N’intervenez jamais seul·e.</p><button class="sos-trigger" data-action="start-sos"><span>SOS</span><small>Maintenir pour alerter</small><i></i></button><div class="sos-options"><a href="tel:112"><svg><use href="#i-phone"/></svg><span><strong>Appeler les secours</strong><small>112 · danger immédiat</small></span><svg><use href="#i-arrow"/></svg></a><button data-action="contact-mediator"><svg><use href="#i-chat"/></svg><span><strong>Parler à un médiateur</strong><small>Écoute confidentielle</small></span><svg><use href="#i-arrow"/></svg></button></div></div><div class="sos-countdown" data-sos-state="countdown"><div class="count-ring"><span data-sos-count>5</span><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="65"/><circle class="count-progress" cx="75" cy="75" r="65"/></svg></div><h2>Alerte en préparation</h2><p>Votre position sera partagée temporairement avec vos référents vérifiés.</p><button class="cancel-sos" data-action="cancel-sos">Annuler l’alerte</button></div><div class="sos-sent" data-sos-state="sent"><div class="sent-check"><svg><use href="#i-check"/></svg></div><span class="sos-label">ALERTE TRANSMISE</span><h2>Vous n’êtes plus seul·e.</h2><p>Restez à distance et suivez les consignes. Le partage de position s’arrêtera automatiquement.</p><div class="alerted-contacts"><span>KB</span><span>AD</span><span>112</span><div><strong>3 contacts alertés</strong><small>Karim a confirmé la prise en charge</small></div></div><div class="safe-route-card"><div><svg><use href="#i-route"/></svg><span><small>Lieu sûr recommandé</small><strong>Maison de quartier</strong><p>4 min à pied · trajet privilégié</p></span></div><button data-action="start-route">Démarrer le guidage</button></div><button class="stop-share" data-action="stop-sharing">Arrêter le partage de position</button></div></section>
+
+  <section class="sheet role-sheet" data-sheet="roles" role="dialog" aria-modal="true" aria-labelledby="roles-title"><button class="sheet-close" data-close-sheet aria-label="Fermer"><svg><use href="#i-close"/></svg></button><span class="eyebrow">Changer d’espace</span><h2 id="roles-title">Mes rôles</h2><p>Les espaces professionnels nécessitent une validation.</p><div class="role-list" data-role-list></div></section>
+
+  <section class="sheet settings-sheet" data-sheet="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title"><button class="sheet-close" data-close-sheet aria-label="Fermer"><svg><use href="#i-close"/></svg></button><span class="eyebrow">Confidentialité</span><h2 id="settings-title">Mes données</h2><p>Vous gardez le contrôle sur vos permissions et votre historique.</p><div class="settings-list"><button data-action="permission-location"><svg><use href="#i-pin"/></svg><span><strong>Géolocalisation</strong><small>Uniquement pendant l’utilisation</small></span><b>Au besoin</b></button><button data-action="permission-media"><svg><use href="#i-camera"/></svg><span><strong>Caméra et microphone</strong><small>Jamais en arrière-plan</small></span><b>Au besoin</b></button><button data-action="download-data"><svg><use href="#i-download"/></svg><span><strong>Télécharger mes données</strong><small>Format JSON sécurisé</small></span><svg><use href="#i-chevron"/></svg></button><button class="danger-row" data-action="delete-account"><svg><use href="#i-close"/></svg><span><strong>Supprimer mon compte</strong><small>Suppression de toutes les données locales</small></span><svg><use href="#i-chevron"/></svg></button></div></section>
+
+  <section class="sheet compact-sheet" data-sheet="contact" role="dialog" aria-modal="true" aria-labelledby="contact-title"><button class="sheet-close" data-close-sheet aria-label="Fermer"><svg><use href="#i-close"/></svg></button><div class="contact-avatar">KB<i></i></div><span class="eyebrow">Disponible maintenant</span><h2 id="contact-title">Parler à Karim</h2><p>Médiateur vérifié · échange privé · réponse moyenne en moins de 5 minutes.</p><button class="primary-button wide" data-action="open-private-chat"><svg><use href="#i-chat"/></svg> Démarrer l’échange</button><button class="ghost-button wide" data-close-sheet>Plus tard</button></section>
+
+  <div class="toast" role="status" aria-live="polite"><span><svg><use href="#i-check"/></svg></span><p data-toast>Action enregistrée.</p></div>
+  <script src="app.js?v=3.4"></script>
+</body>
 </html>
