@@ -11,6 +11,16 @@ const roles={
   Collectivité:{initials:"ML",name:"Malik L.",firstName:"Malik",symbol:"CO",verification:"Collectivité vérifiée",score:82,greeting:'Bonjour Malik <em>👋</em>',subtitle:"La tendance territoriale reste favorable cette semaine.",heroText:"Le temps moyen de prise en charge baisse de quatre minutes et 91% des situations sont résolues.",actionTitle:"Piloter la prévention",quick1:"Ouvrir le tableau de bord",quick2:"Créer un point de vigilance",quick3:"Voir les ressources terrain",access:["professional","admin"]}
 };
 
+const roleJourneys={
+  Habitant:{context:"Vie de quartier",focus:"Observer sans s’exposer",indexContext:"Indice du quartier",quick:[{title:"Parler à un médiateur",description:"Échange privé et confidentiel",command:"contact"},{title:"Signaler sans m’exposer",description:"Parcours guidé et position protégée",command:"report"},{title:"Trouver un lieu sûr",description:"Lieux ouverts à proximité",command:"safe"}]},
+  Jeune:{context:"Espace jeune protégé",focus:"Parler, aider, se mettre à l’abri",indexContext:"Climat autour de moi",quick:[{title:"Parler sans pression",description:"Un médiateur jeunesse vous écoute",command:"contact"},{title:"Aider un ami",description:"Partager une inquiétude sans l’identifier",command:"minor-report"},{title:"Me mettre à l’abri",description:"Voir les lieux sûrs et adultes référents",command:"safe"}]},
+  Parent:{context:"Espace parent",focus:"Écouter, comprendre et orienter",indexContext:"Indice du quartier",quick:[{title:"Parler à un médiateur",description:"Conseil confidentiel pour une situation",command:"contact"},{title:"Signaler une situation",description:"Sans nommer ni exposer un mineur",command:"report"},{title:"Rejoindre les parents",description:"Canal modéré et temps d’échange",command:"parents"}]},
+  Médiateur:{context:"Console professionnelle",focus:"Qualifier, apaiser et coordonner",indexContext:"Veille professionnelle",quick:[{title:"Ouvrir la file d’examen",description:"Signaux à qualifier et affecter",command:"admin"},{title:"Voir l’intervention active",description:"Équipes, étapes et canal privé",command:"intervention"},{title:"Consulter les zones agrégées",description:"Carte protégée du territoire",command:"map"}]},
+  Association:{context:"Réseau associatif",focus:"Coordonner les ressources locales",indexContext:"Dynamique du territoire",quick:[{title:"Parler aux partenaires",description:"Canal associations modéré",command:"associations"},{title:"Ajouter un signal terrain",description:"Observation professionnelle protégée",command:"report"},{title:"Voir les activités",description:"Ateliers et disponibilités du jour",command:"activities"}]},
+  Commerçant:{context:"Commerce partenaire",focus:"Accueillir, orienter et alerter",indexContext:"Climat autour du commerce",quick:[{title:"Contacter un médiateur",description:"Ligne directe partenaire",command:"contact"},{title:"Signaler autour du commerce",description:"Zone publique volontairement floutée",command:"report"},{title:"Gérer ma disponibilité",description:"Mettre à jour le statut lieu refuge",command:"availability"}]},
+  Collectivité:{context:"Pilotage territorial",focus:"Décider sur des données agrégées",indexContext:"Indicateur territorial",quick:[{title:"Ouvrir le tableau de bord",description:"Indicateurs, validation et ressources",command:"admin"},{title:"Créer un point de vigilance",description:"Qualification professionnelle obligatoire",command:"report"},{title:"Voir les ressources terrain",description:"Lieux sûrs et équipes disponibles",command:"map"}]}
+};
+
 const roleDescriptions={
   Habitant:"Observer, signaler, rester en sécurité",Jeune:"Parler, aider un ami, être protégé",Parent:"Écouter, comprendre, protéger",Médiateur:"Valider, intervenir, apaiser",Association:"Coordonner, accompagner, prévenir",Commerçant:"Accueillir, orienter, alerter",Collectivité:"Piloter, mobiliser, mesurer"
 };
@@ -30,13 +40,24 @@ const channelData={
 };
 
 const signals={
-  s1:{title:"Tensions verbales",status:"À corroborer",zone:"City-stade · zone approximative de 300 m",confirms:2,color:"#e8a140"},
-  s2:{title:"Différend entre groupes",status:"Médiation en cours",zone:"Square des Bruyères · zone approximative de 500 m",confirms:4,color:"#57aee3"},
-  s3:{title:"Rumeur numérique",status:"Situation stabilisée",zone:"Secteur Nord · position non applicable",confirms:1,color:"#43bd7e"}
+  s1:{title:"Tensions verbales",status:"À corroborer",zone:"Secteur Sentes · zone approximative de 300 m",confirms:2,color:"#e8a140",stage:2},
+  s2:{title:"Différend entre groupes",status:"Médiation en cours",zone:"Secteur Bruyères · zone approximative de 500 m",confirms:4,color:"#57aee3",stage:3},
+  s3:{title:"Rumeur numérique",status:"Situation stabilisée",zone:"Secteur Nord · position non applicable",confirms:1,color:"#43bd7e",stage:4}
 };
 
 const storedRole=localStorage.getItem("lien-role-v3");
-const state={view:"home",role:roles[storedRole]?storedRole:"Parent",onboardStep:1,onboardRole:null,reportStep:1,report:{type:null,attachments:[]},channel:"quartier",activeSignal:"s1",sosTimer:null,sosCount:5,audioRecorder:null,audioStream:null,audioStartedAt:null};
+const allowedViews=new Set(["home","map","channels","profile","intervention","admin"]);
+const state={view:"home",role:roles[storedRole]?storedRole:"Parent",onboardStep:1,onboardRole:null,reportStep:1,report:{type:null,attachments:[],minor:false},channel:"quartier",activeSignal:"s1",reviewItem:null,sosTimer:null,sosCount:5,audioRecorder:null,audioStream:null,audioStartedAt:null};
+let nativeTileMapReady=false;
+let activeMapFilter="all";
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>'"]/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[character]);
+}
+
+function readStoredReports(){
+  try{const value=JSON.parse(localStorage.getItem("lien-reports")||"[]");return Array.isArray(value)?value:[]}catch{return[]}
+}
 
 function showToast(message){
   const toast=q(".toast");q("[data-toast]").textContent=message;toast.classList.add("show");
@@ -44,13 +65,14 @@ function showToast(message){
 }
 
 function setView(view){
-  if(!q(`[data-view="${view}"]`))return;
+  if(!allowedViews.has(view)||!q(`[data-view="${view}"]`))return;
   const access=roles[state.role]?.access||[];
   if(view==="intervention"&&!access.includes("professional"))view="home";
   if(view==="admin"&&!access.includes("admin"))view="home";
   state.view=view;qa("[data-view]").forEach(panel=>panel.classList.toggle("active",panel.dataset.view===view));
   qa("[data-view-link]").forEach(button=>button.classList.toggle("active",button.dataset.viewLink===view));
   window.scrollTo({top:0,behavior:"smooth"});
+  if(view==="map")requestAnimationFrame(initializeTerritoryMap);
 }
 
 function openSheet(name){
@@ -73,13 +95,17 @@ function renderRoles(){
 
 function applyRole(role,customFirstName){
   if(!roles[role])return;state.role=role;localStorage.setItem("lien-role-v3",role);const profile=roles[role];
+  const journey=roleJourneys[role]||roleJourneys.Habitant;
   const firstName=customFirstName||profile.firstName;const name=customFirstName?`${customFirstName} ${profile.name.includes(".")?profile.name.slice(-2):""}`.trim():profile.name;
   const values={...profile,name,greeting:profile.greeting.replace(profile.firstName,firstName),role};
   qa("[data-user]").forEach(element=>{const key=element.dataset.user;if(values[key]===undefined)return;if(key==="greeting")element.innerHTML=values[key];else element.textContent=values[key]});
-  q("[data-score]").textContent=profile.score;q("[data-score-label]").textContent=profile.score>=80?"Bonne":profile.score>=65?"Stable":"Vigilance";
+  q("[data-score]").textContent=profile.score;q("[data-score-sheet]").textContent=profile.score;q("[data-score-label]").textContent=profile.score>=80?"Bonne":profile.score>=65?"Stable":"Vigilance";
   q(".score-progress").style.strokeDashoffset=358*(1-profile.score/100);
+  document.body.dataset.role=role;q("[data-role-symbol]").textContent=profile.symbol;q("[data-role-context-label]").textContent=journey.context;q("[data-role-context-title]").textContent=journey.focus;q("[data-index-context]").textContent=journey.indexContext;
+  qa("[data-role-quick]").forEach((button,index)=>{const quick=journey.quick[index];if(!quick)return;button.dataset.roleCommand=quick.command;q("[data-role-quick-title]",button).textContent=quick.title;q("[data-role-quick-description]",button).textContent=quick.description});
   qa('[data-role-access="professional"]').forEach(element=>element.style.display=profile.access.includes("professional")?"":"none");
   qa('[data-role-access="admin"]').forEach(element=>element.style.display=profile.access.includes("admin")?"":"none");
+  const professional=profile.access.includes("professional");q("[data-map-privacy-title]").textContent=professional?"Mode professionnel vérifié":"Mode public protégé";q("[data-map-privacy-text]").textContent=professional?"La carte reste agrégée ; les détails sensibles sont réservés aux dossiers tracés.":"Aucune adresse, aucun domicile et aucune personne ne sont localisables.";
   if((state.view==="intervention"&&!profile.access.includes("professional"))||(state.view==="admin"&&!profile.access.includes("admin")))setView("home");
   renderRoles();
 }
@@ -93,9 +119,9 @@ function openOnboarding(){q("[data-onboarding]").classList.add("open");document.
 function closeOnboarding(){q("[data-onboarding]").classList.remove("open");document.body.style.overflow=""}
 
 function resetReport(){
-  state.reportStep=1;state.report={type:null,attachments:[]};qa("[data-report-step]").forEach(panel=>panel.classList.toggle("active",panel.dataset.reportStep==="1"));
+  state.reportStep=1;state.report={type:null,attachments:[],minor:false};qa("[data-report-step]").forEach(panel=>panel.classList.toggle("active",panel.dataset.reportStep==="1"));
   qa(".sheet-steps i").forEach((dot,index)=>dot.classList.toggle("active",index===0));qa("[data-report-type]").forEach(button=>button.classList.remove("selected"));
-  const firstNext=q('[data-report-step="1"] [data-report-next]');if(firstNext)firstNext.disabled=true;q("[data-attachments]").innerHTML="";
+  const firstNext=q('[data-report-step="1"] [data-report-next]');if(firstNext)firstNext.disabled=true;q("[data-attachments]").innerHTML="";q("[data-report-minor]").checked=false;q("[data-minor-safety]").hidden=true;qa("[data-media]").forEach(button=>button.disabled=false);
 }
 
 function setReportStep(step){
@@ -107,7 +133,7 @@ function setReportStep(step){
 
 function addAttachment(label){
   if(state.report.attachments.includes(label))return;state.report.attachments.push(label);
-  q("[data-attachments]").insertAdjacentHTML("beforeend",`<span class="attachment">✓ ${label}</span>`);
+  q("[data-attachments]").insertAdjacentHTML("beforeend",`<span class="attachment">✓ ${escapeHTML(label)}</span>`);
 }
 
 async function toggleAudioRecording(button){
@@ -122,20 +148,21 @@ async function toggleAudioRecording(button){
 
 function submitReport(){
   const reference=`#LN-${2050+Math.floor(Math.random()*40)}`;q("[data-report-reference]").textContent=reference;
-  const record={reference,type:state.report.type,description:q("[data-report-description]")?.value||"",location:q("[data-report-location]")?.value||"Zone non précisée",createdAt:new Date().toISOString(),status:"En attente de validation"};
-  const reports=JSON.parse(localStorage.getItem("lien-reports")||"[]");reports.unshift(record);localStorage.setItem("lien-reports",JSON.stringify(reports.slice(0,20)));
+  const record={reference,type:state.report.type,description:q("[data-report-description]")?.value||"",location:q("[data-report-location]")?.value||"Zone non précisée",minor:state.report.minor,createdAt:new Date().toISOString(),status:"En attente d’examen professionnel"};
+  const reports=readStoredReports();reports.unshift(record);localStorage.setItem("lien-reports",JSON.stringify(reports.slice(0,20)));
 }
 
 function openSignal(id){
   const signal=signals[id]||signals.s1;state.activeSignal=id;
   q("[data-detail-title]").textContent=signal.title;q("[data-detail-status]").textContent=signal.status;q("[data-detail-zone]").textContent=signal.zone;q("[data-detail-confirms]").textContent=signal.confirms;q("[data-detail-dot]").style.background=signal.color;
+  qa("[data-validation-step]").forEach(step=>{const number=Number(step.dataset.validationStep);step.classList.toggle("done",number<signal.stage);step.classList.toggle("active",number===signal.stage)});
   openSheet("signal");
 }
 
 function renderMessages(channel){
   const data=channelData[channel]||channelData.quartier;state.channel=channel;q("[data-channel-title]").textContent=data.title;q("[data-channel-avatar]").textContent=data.avatar;
   q(".chat-head small").innerHTML=`<i></i> ${data.meta}`;
-  q("[data-messages]").innerHTML=data.messages.map(message=>message.system?`<div class="system-message">${message.system}</div>`:`<article class="message${message.me?" me":""}"><span class="message-avatar">${message.initials}</span><div class="message-body"><div class="message-head"><strong>${message.author}</strong><time>${message.time}</time></div><p>${message.text}</p></div></article>`).join("");
+  q("[data-messages]").innerHTML=data.messages.map(message=>message.system?`<div class="system-message">${escapeHTML(message.system)}</div>`:`<article class="message${message.me?" me":""}"><span class="message-avatar">${escapeHTML(message.initials)}</span><div class="message-body"><div class="message-head"><strong>${escapeHTML(message.author)}</strong><time>${escapeHTML(message.time)}</time></div><p>${escapeHTML(message.text)}</p></div></article>`).join("");
   const box=q("[data-messages]");box.scrollTop=box.scrollHeight;
 }
 
@@ -159,7 +186,51 @@ function sendCurrentMessage(){
 
 function submitSignalComment(){
   const form=q("[data-comment-form]");const textarea=form.elements.comment;const text=textarea.value.trim();if(!text){showToast("Ajoutez une précision avant de transmettre.");return}
-  q("[data-comments]").insertAdjacentHTML("afterbegin",`<article><span>${roles[state.role].initials}</span><div><strong>Vous · maintenant</strong><p>${text.replace(/[<>]/g,"")}</p></div></article>`);textarea.value="";showToast("Précision transmise au médiateur.");
+  q("[data-comments]").insertAdjacentHTML("afterbegin",`<article><span>${escapeHTML(roles[state.role].initials)}</span><div><strong>Vous · maintenant</strong><p>${escapeHTML(text)}</p></div></article>`);textarea.value="";showToast("Précision transmise au médiateur.");
+}
+
+function runRoleCommand(command){
+  if(command==="contact"){openSheet("contact");return}
+  if(command==="report"||command==="minor-report"){resetReport();if(command==="minor-report"){state.report.minor=true;q("[data-report-minor]").checked=true;q("[data-minor-safety]").hidden=false;qa("[data-media]").forEach(button=>button.disabled=true)}openSheet("report");return}
+  if(command==="safe"){activeMapFilter="safe";setView("map");setMapFilterUI("safe");return}
+  if(command==="map"){activeMapFilter="all";setView("map");setMapFilterUI("all");return}
+  if(command==="admin"||command==="intervention"){setView(command);return}
+  if(command==="parents"||command==="associations"){setView("channels");renderMessages(command);return}
+  if(command==="activities"){setView("home");setTimeout(()=>q(".activity-list")?.scrollIntoView({behavior:"smooth",block:"start"}),120);return}
+  if(command==="availability")showToast("Votre commerce refuge est indiqué ouvert jusqu’à 20h30.");
+}
+
+function setMapFilterUI(filter){
+  qa("[data-map-filter]").forEach(button=>button.classList.toggle("active",button.dataset.mapFilter===filter));
+  qa("[data-map-type]").forEach(item=>{item.style.display=filter==="all"||item.dataset.mapType===filter?"":"none"});
+  applyMapFilter(filter);
+}
+
+function applyMapFilter(filter){
+  activeMapFilter=filter;qa("[data-native-map-type]").forEach(item=>{item.style.display=filter==="all"||item.dataset.nativeMapType===filter?"":"none"});
+}
+
+function initializeNativeTileMap(){
+  if(nativeTileMapReady)return;const container=q("#live-map"),mapCard=q("[data-map]");if(!container||!mapCard)return;nativeTileMapReady=true;
+  const zoom=14,centerLon=2.4195,centerLat=48.8792,n=2**zoom;const centerX=(centerLon+180)/360*n;const latitudeRadians=centerLat*Math.PI/180;const centerY=(1-Math.asinh(Math.tan(latitudeRadians))/Math.PI)/2*n;const width=mapCard.clientWidth||366,height=mapCard.clientHeight||610;let tiles="";
+  for(let y=Math.floor(centerY)-2;y<=Math.floor(centerY)+2;y+=1){for(let x=Math.floor(centerX)-1;x<=Math.floor(centerX)+1;x+=1){const left=Math.round((x-centerX)*256+width/2),top=Math.round((y-centerY)*256+height/2);tiles+=`<img src="https://tile.openstreetmap.org/${zoom}/${x}/${y}.png" alt="" style="left:${left}px;top:${top}px" />`}}
+  container.innerHTML=`<div class="native-tiles">${tiles}</div><div class="native-map-shade"></div><button class="native-zone tension" data-native-map-type="tension" data-signal-id="s1" style="left:72%;top:31%" aria-label="Zone de tension généralisée"><span>!</span></button><button class="native-zone watch" data-native-map-type="watch" data-signal-id="s2" style="left:24%;top:51%" aria-label="Zone de vigilance généralisée"><span>2</span></button><button class="native-zone calm" data-native-map-type="calm" data-signal-id="s3" style="left:62%;top:72%" aria-label="Zone calme généralisée"><span>✓</span></button><button class="native-safe" data-native-map-type="safe" data-action="safe-route" style="left:44%;top:35%" aria-label="Maison de quartier, lieu sûr"><svg><use href="#i-shield"/></svg></button><button class="native-safe" data-native-map-type="safe" data-action="safe-route" style="left:82%;top:64%" aria-label="Commerce partenaire, lieu sûr"><svg><use href="#i-shield"/></svg></button><a class="native-attribution" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap</a>`;applyMapFilter(activeMapFilter);const revealMap=()=>mapCard.classList.add("map-ready");qa(".native-tiles img",container).forEach(tile=>{if(tile.complete&&tile.naturalWidth)revealMap();else tile.addEventListener("load",revealMap,{once:true})});
+}
+
+function initializeTerritoryMap(){
+  if(!nativeTileMapReady)initializeNativeTileMap();
+}
+
+function openReview(button){
+  const item=button.closest("[data-queue-item]");if(!item)return;state.reviewItem=item;q("[data-review-sheet-title]").textContent=item.dataset.reviewTitle;q("[data-review-sheet-zone]").textContent=item.dataset.reviewZone;q("[data-review-sheet-proof]").textContent=item.dataset.reviewProof;qa("[data-review-check]").forEach(check=>check.checked=false);q("[data-review-note]").value="";q('[data-action="confirm-review"]').disabled=true;openSheet("review");
+}
+
+function updateReviewDecisionState(){
+  const allChecked=qa("[data-review-check]").every(check=>check.checked);const note=q("[data-review-note]").value.trim();q('[data-action="confirm-review"]').disabled=!(allChecked&&note.length>=12);
+}
+
+function finishReview(confirmed){
+  if(!state.reviewItem)return;const item=state.reviewItem;if(confirmed){item.style.background="#eff8e8";q("strong",item).textContent=`${q("strong",item).textContent} · affecté`;q("button",item).textContent="Affecté ✓";q("button",item).disabled=true;showToast("Signal qualifié, affecté et inscrit au journal d’audit.")}else{item.remove();showToast("Signal classé sans suite avec motif et trace d’audit.")}state.reviewItem=null;closeSheets();
 }
 
 renderRoles();applyRole(state.role);renderMessages(state.channel);
@@ -169,6 +240,7 @@ qa("[data-close-sheet]").forEach(button=>button.addEventListener("click",()=>clo
 
 document.addEventListener("click",event=>{
   const roleChoice=event.target.closest("[data-role-choice]");if(roleChoice){applyRole(roleChoice.dataset.roleChoice);closeSheets();showToast(`Espace ${roleChoice.dataset.roleChoice} activé.`);return}
+  const roleQuick=event.target.closest("[data-role-quick]");if(roleQuick){runRoleCommand(roleQuick.dataset.roleCommand);return}
   const signalButton=event.target.closest("[data-signal-id]");if(signalButton){openSignal(signalButton.dataset.signalId);return}
   const actionButton=event.target.closest("[data-action]");if(!actionButton)return;const action=actionButton.dataset.action;
   if(action==="role-picker")openSheet("roles");
@@ -177,6 +249,13 @@ document.addEventListener("click",event=>{
   if(action==="contact-mediator"){if(q("[data-sos]").classList.contains("open"))closeSos();openSheet("contact")}
   if(action==="open-private-chat"){closeSheets();setView("channels");renderMessages("parents");showToast("Discussion privée ouverte avec Karim.")}
   if(action==="settings")openSheet("settings");
+  if(action==="score-explain")openSheet("score");
+  if(action==="map-settings")openSheet("map-privacy");
+  if(action==="review-signal")openReview(actionButton);
+  if(action==="confirm-review")finishReview(true);
+  if(action==="archive-review"){if(q("[data-review-note]").value.trim().length<12)showToast("Ajoutez une note de décision d’au moins 12 caractères.");else finishReview(false)}
+  if(action==="show-safe-places"){closeSheets();activeMapFilter="safe";setView("map");setMapFilterUI("safe")}
+  if(action==="moderation-help")showToast("Touchez longuement un message pour le signaler à la modération, sans réponse publique.");
   if(action==="notifications")showToast("3 mises à jour : une médiation, un atelier et un signal corroboré.");
   if(action==="locate"||action==="use-location"){
     if(!navigator.geolocation){showToast("La géolocalisation n’est pas disponible.");return}
@@ -196,11 +275,11 @@ document.addEventListener("click",event=>{
   if(action==="open-ops-chat"){setView("channels");renderMessages("mediateurs")}
   if(action==="export-interventions"||action==="export-csv"){downloadBlob("lien-export.csv","reference,quartier,statut,duree\nINT-381,Secteur Nord,Resolu,38 min\nINT-380,Les Sentes,Suivi,72 min","text/csv;charset=utf-8");showToast("Export CSV généré.")}
   if(action==="print-report")window.print();
-  if(action==="validate-signal"){const item=actionButton.closest("[data-queue-item]");actionButton.textContent="Validé ✓";actionButton.disabled=true;item.style.background="#eff8e8";showToast("Signal validé et affecté à un médiateur.")}
-  if(action==="dismiss-signal"){actionButton.closest("[data-queue-item]").remove();showToast("Signal classé non pertinent avec trace d’audit.")}
-  if(["manage-users","manage-mediators","manage-districts","manage-safe","moderation","audit-log","map-settings","badges"].includes(action))showToast("Module ouvert en mode démonstration.");
+  if(["manage-users","manage-mediators","manage-districts","manage-safe","moderation","audit-log","badges"].includes(action))showToast("Module ouvert en mode démonstration.");
   if(action==="permission-location"||action==="permission-media")showToast("Cette permission sera demandée uniquement au moment nécessaire.");
-  if(action==="download-data"){downloadBlob("mes-donnees-lien.json",JSON.stringify({role:state.role,reports:JSON.parse(localStorage.getItem("lien-reports")||"[]")},null,2),"application/json");showToast("Copie de vos données générée.")}
+  if(action==="retention")showToast("Conservation ordinaire : 90 jours maximum, puis suppression automatique.");
+  if(action==="access-history")showToast("Aucun accès professionnel inhabituel détecté sur les 30 derniers jours.");
+  if(action==="download-data"){downloadBlob("mes-donnees-lien.json",JSON.stringify({role:state.role,reports:readStoredReports()},null,2),"application/json");showToast("Copie de vos données générée.")}
   if(action==="delete-account"){localStorage.removeItem("lien-role-v3");localStorage.removeItem("lien-reports");localStorage.removeItem("lien-onboarded-v3");closeSheets();showToast("Données locales supprimées.");setTimeout(openOnboarding,500)}
 });
 
@@ -208,8 +287,10 @@ qa("[data-report-type]").forEach(button=>button.addEventListener("click",()=>{qa
 qa("[data-report-next]").forEach(button=>button.addEventListener("click",()=>{if(state.reportStep===1&&state.report.type==="Violence"){closeSheets();openSos();return}setReportStep(Math.min(4,state.reportStep+1))}));
 qa("[data-media]").forEach(button=>button.addEventListener("click",()=>{const media=button.dataset.media;if(media==="audio")toggleAudioRecording(button);else q(`[data-file="${media}"]`).click()}));
 qa("[data-file]").forEach(input=>input.addEventListener("change",()=>{if(input.files?.[0])addAttachment(`${input.dataset.file==="photo"?"Photo":"Vidéo"} · ${input.files[0].name}`)}));
+q("[data-report-minor]").addEventListener("change",event=>{state.report.minor=event.target.checked;q("[data-minor-safety]").hidden=!state.report.minor;qa("[data-media]").forEach(button=>button.disabled=state.report.minor);if(state.report.minor){state.report.attachments=[];q("[data-attachments]").innerHTML="";showToast("Protection mineur activée : ajout de média désactivé.")}});
 
-qa("[data-map-filter]").forEach(button=>button.addEventListener("click",()=>{qa("[data-map-filter]").forEach(item=>item.classList.remove("active"));button.classList.add("active");const filter=button.dataset.mapFilter;qa("[data-map-type]").forEach(item=>{item.style.display=filter==="all"||item.dataset.mapType===filter?"":"none"})}));
+qa("[data-map-filter]").forEach(button=>button.addEventListener("click",()=>setMapFilterUI(button.dataset.mapFilter)));
+qa("[data-review-check]").forEach(check=>check.addEventListener("change",updateReviewDecisionState));q("[data-review-note]").addEventListener("input",updateReviewDecisionState);
 
 qa("[data-channel]").forEach(button=>button.addEventListener("click",()=>{qa("[data-channel]").forEach(item=>item.classList.remove("active"));button.classList.add("active");renderMessages(button.dataset.channel)}));
 q("[data-message-form]").addEventListener("submit",event=>{event.preventDefault();sendCurrentMessage()});
