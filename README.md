@@ -46,6 +46,9 @@ Le dépôt est configuré comme site statique Vercel. Chaque push sur la branche
 - scénarios d'entraînement sans score ni compétition ;
 - centre de micro-formations avec progression locale privée ;
 - consignes essentielles en français, français facile, anglais et arabe avec lecture vocale ;
+- système visuel LIEN 5.0 : typographie lisible, espacements cohérents, cartes sans chevauchement et zones tactiles adaptées au mobile ;
+- signalement en liste verticale, messagerie plein écran, navigation basse protégée et profil mobile simplifié ;
+- mode texte agrandi étendu à l'accueil, la carte, les formulaires, les canaux, le profil et le SOS ;
 - gestion locale des permissions, téléchargement et suppression des données ;
 - manifeste PWA, icônes, raccourcis et cache hors ligne.
 
