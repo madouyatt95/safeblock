@@ -28,6 +28,15 @@ Le dépôt est configuré comme site statique Vercel. Chaque push sur la branche
 - SOS avec compte à rebours, annulation, contacts alertés et itinéraire vers un lieu sûr ;
 - profil privé, badges de formation, contributions et historique ;
 - tableau de bord collectivité/médiateur, file de validation, statistiques, gestion et exports CSV/PDF ;
+- compte local, statut de vérification, double authentification préparée et gestion des sessions ;
+- notifications adaptées au rôle, aperçus discrets et heures silencieuses ;
+- centre opérationnel médiateur avec disponibilité, escalade, clôture documentée et suivi ;
+- espace jeune protégé, aide sans identité et sortie rapide vers un écran neutre ;
+- programme de lieux sûrs vérifiés avec disponibilité, renouvellement et QR officiel ;
+- prévention anti-abus locale : rapprochement des doublons, limitation temporaire et recours humain ;
+- modération confidentielle des messages et journal d'examen ;
+- réglages d'accessibilité : texte, contraste, réduction des mouvements, français simplifié et usage à une main ;
+- indicateurs d'impact responsables sans classement de quartier ;
 - gestion locale des permissions, téléchargement et suppression des données ;
 - manifeste PWA, icônes, raccourcis et cache hors ligne.
 
@@ -37,7 +46,7 @@ Les positions publiques sont agrégées, les rôles professionnels sont identifi
 
 ## Passage en production
 
-Les données sont actuellement simulées et stockées localement. Une version déployée nécessitera notamment :
+Les données et nouveaux états sont actuellement simulés et stockés localement. Les écrans sont prêts à être raccordés, mais une version déployée nécessitera notamment :
 
 - authentification et vérification des rôles professionnels ;
 - backend multi-territoires et base géospatiale ;

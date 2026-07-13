@@ -13,7 +13,7 @@ const roles={
 
 const roleJourneys={
   Habitant:{context:"Vie de quartier",focus:"Observer sans s’exposer",indexContext:"Indice du quartier",quick:[{title:"Parler à un médiateur",description:"Échange privé et confidentiel",command:"contact"},{title:"Signaler sans m’exposer",description:"Parcours guidé et position protégée",command:"report"},{title:"Trouver un lieu sûr",description:"Lieux ouverts à proximité",command:"safe"}]},
-  Jeune:{context:"Espace jeune protégé",focus:"Parler, aider, se mettre à l’abri",indexContext:"Climat autour de moi",quick:[{title:"Parler sans pression",description:"Un médiateur jeunesse vous écoute",command:"contact"},{title:"Aider un ami",description:"Partager une inquiétude sans l’identifier",command:"minor-report"},{title:"Me mettre à l’abri",description:"Voir les lieux sûrs et adultes référents",command:"safe"}]},
+  Jeune:{context:"Espace jeune protégé",focus:"Parler, aider, se mettre à l’abri",indexContext:"Climat autour de moi",quick:[{title:"Parler sans pression",description:"Un médiateur jeunesse vous écoute",command:"young-support"},{title:"Aider un ami",description:"Partager une inquiétude sans l’identifier",command:"minor-report"},{title:"Me mettre à l’abri",description:"Voir les lieux sûrs et adultes référents",command:"safe"}]},
   Parent:{context:"Espace parent",focus:"Écouter, comprendre et orienter",indexContext:"Indice du quartier",quick:[{title:"Parler à un médiateur",description:"Conseil confidentiel pour une situation",command:"contact"},{title:"Signaler une situation",description:"Sans nommer ni exposer un mineur",command:"report"},{title:"Rejoindre les parents",description:"Canal modéré et temps d’échange",command:"parents"}]},
   Médiateur:{context:"Console professionnelle",focus:"Qualifier, apaiser et coordonner",indexContext:"Veille professionnelle",quick:[{title:"Ouvrir la file d’examen",description:"Signaux à qualifier et affecter",command:"admin"},{title:"Voir l’intervention active",description:"Équipes, étapes et canal privé",command:"intervention"},{title:"Consulter les zones agrégées",description:"Carte protégée du territoire",command:"map"}]},
   Association:{context:"Réseau associatif",focus:"Coordonner les ressources locales",indexContext:"Dynamique du territoire",quick:[{title:"Parler aux partenaires",description:"Canal associations modéré",command:"associations"},{title:"Ajouter un signal terrain",description:"Observation professionnelle protégée",command:"report"},{title:"Voir les activités",description:"Ateliers et disponibilités du jour",command:"activities"}]},
@@ -45,9 +45,30 @@ const signals={
   s3:{title:"Rumeur numérique",status:"Situation stabilisée",zone:"Secteur Nord · position non applicable",confirms:1,color:"#43bd7e",stage:4}
 };
 
+const notificationData={
+  common:[
+    {icon:"i-check",title:"Signalement examiné",text:"Votre observation a été transmise à une équipe habilitée. Aucun détail n’est affiché ici.",time:"Il y a 12 min"},
+    {icon:"i-users",title:"Atelier de proximité",text:"Le temps d’échange de 17h30 dispose encore de places.",time:"Il y a 1 h"}
+  ],
+  Jeune:{icon:"i-chat",title:"Un médiateur jeunesse est disponible",text:"Vous pouvez écrire sans donner le nom de la personne concernée.",time:"Maintenant"},
+  Médiateur:{icon:"i-shield",title:"Deux signaux à qualifier",text:"La file professionnelle a été mise à jour, sans notification publique.",time:"Il y a 4 min"},
+  Association:{icon:"i-users",title:"Coordination partenaire",text:"La maison de quartier confirme son ouverture jusqu’à 21h.",time:"Il y a 8 min"},
+  Commerçant:{icon:"i-pin",title:"Statut lieu sûr actif",text:"Votre disponibilité générale est visible jusqu’à 20h30.",time:"Il y a 3 min"},
+  Collectivité:{icon:"i-dashboard",title:"Bilan territorial actualisé",text:"Le délai moyen de première réponse est de huit minutes.",time:"Il y a 15 min"},
+  default:{icon:"i-shield",title:"Situation prise en charge",text:"Une médiation de proximité est en cours. Aucun déplacement n’est demandé.",time:"Il y a 6 min"}
+};
+
+const impactPeriods={
+  "7":{response:"9 min",deescalated:"71%",orientations:"8",satisfaction:"4,5/5",followup:"86%",recurrence:"13%"},
+  "30":{response:"8 min",deescalated:"74%",orientations:"31",satisfaction:"4,6/5",followup:"89%",recurrence:"11%"},
+  "90":{response:"10 min",deescalated:"69%",orientations:"82",satisfaction:"4,4/5",followup:"84%",recurrence:"14%"}
+};
+
+const defaultPreferences={twoFactor:false,statusNotifications:true,activityNotifications:true,discreetNotifications:true,quietFrom:"21:00",quietTo:"07:30",textSize:"normal",highContrast:false,reducedMotion:false,simpleLanguage:false,oneHanded:false,discreetMode:false};
+
 const storedRole=localStorage.getItem("lien-role-v3");
 const allowedViews=new Set(["home","map","channels","profile","intervention","admin"]);
-const state={view:"home",role:roles[storedRole]?storedRole:"Parent",onboardStep:1,onboardRole:null,reportStep:1,report:{type:null,attachments:[],minor:false},channel:"quartier",activeSignal:"s1",reviewItem:null,sosTimer:null,sosCount:5,audioRecorder:null,audioStream:null,audioStartedAt:null};
+const state={view:"home",role:roles[storedRole]?storedRole:"Parent",onboardStep:1,onboardRole:null,reportStep:1,report:{type:null,attachments:[],minor:false},channel:"quartier",activeSignal:"s1",reviewItem:null,reportedMessage:null,sosTimer:null,sosCount:5,audioRecorder:null,audioStream:null,audioStartedAt:null,preferences:readPreferences(),notificationsRead:localStorage.getItem("lien-notifications-read")==="true",safeAvailable:localStorage.getItem("lien-safe-available")!=="false",operatorAvailable:true,selectedOutcome:null};
 let nativeTileMapReady=false;
 let activeMapFilter="all";
 
@@ -57,6 +78,53 @@ function escapeHTML(value){
 
 function readStoredReports(){
   try{const value=JSON.parse(localStorage.getItem("lien-reports")||"[]");return Array.isArray(value)?value:[]}catch{return[]}
+}
+
+function readPreferences(){
+  try{return{...defaultPreferences,...JSON.parse(localStorage.getItem("lien-preferences")||"{}")}}catch{return{...defaultPreferences}}
+}
+
+function savePreferences(){
+  localStorage.setItem("lien-preferences",JSON.stringify(state.preferences));
+}
+
+function renderNotifications(){
+  const items=[notificationData[state.role]||notificationData.default,...notificationData.common];
+  const list=q("[data-notification-list]");if(!list)return;
+  list.innerHTML=items.map((item,index)=>`<article class="${!state.notificationsRead&&index<2?"unread":""}"><span><svg><use href="#${item.icon}"/></svg></span><div><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.text)}</small><time>${escapeHTML(item.time)}</time></div></article>`).join("");
+  const dot=q("[data-notification-dot]");if(dot)dot.hidden=state.notificationsRead;
+}
+
+function updateSafePlaceUI(){
+  const card=q(".safe-availability"),status=q("[data-safe-status]"),button=q('[data-action="toggle-safe-availability"]');if(!card||!status||!button)return;
+  card.classList.toggle("closed",!state.safeAvailable);status.textContent=state.safeAvailable?"Votre lieu est disponible":"Votre lieu est fermé";button.textContent=state.safeAvailable?"Passer fermé":"Passer ouvert";
+}
+
+function updateImpact(period="30"){
+  const values=impactPeriods[period]||impactPeriods["30"];const mapping={response:"response",deescalated:"deescalated",safe:"orientations",satisfaction:"satisfaction",followup7:"followup",recurrence:"recurrence"};
+  qa("[data-impact]").forEach(element=>{element.textContent=values[mapping[element.dataset.impact]]||"—"});
+}
+
+function applyPreferences(){
+  const preferences=state.preferences;
+  document.body.classList.toggle("text-large",preferences.textSize==="large");
+  document.body.classList.toggle("high-contrast",preferences.highContrast);
+  document.body.classList.toggle("reduced-motion",preferences.reducedMotion);
+  document.body.classList.toggle("simple-language",preferences.simpleLanguage);
+  document.body.classList.toggle("one-handed",preferences.oneHanded);
+  const discreet=preferences.discreetMode&&state.role==="Jeune";document.body.classList.toggle("discreet-mode",discreet);
+  qa("[data-pref]").forEach(input=>{input.checked=Boolean(preferences[input.dataset.pref])});
+  qa("[data-pref-value]").forEach(input=>{input.value=preferences[input.dataset.prefValue]||input.value});
+  qa("[data-text-size]").forEach(button=>button.classList.toggle("active",button.dataset.textSize===preferences.textSize));
+  qa("[data-discreet-status]").forEach(status=>status.textContent=discreet?"Activé":"Désactivé");
+  qa(".brand b").forEach(brand=>brand.textContent=discreet?"ESPACE":"LIEN");document.title=discreet?"Espace local":"LIEN — Prévenir, apaiser, protéger";
+  const safety=q(".safety-banner span");if(safety)safety.innerHTML=preferences.simpleLanguage?"<strong>Espace modéré</strong> Ne donnez pas de nom ni d’adresse.":"<strong>Espace modéré</strong> N’indiquez jamais l’identité d’un mineur ni une position précise.";
+  if(discreet){q('[data-user="greeting"]').textContent="Bienvenue";q('[data-user="subtitle"]').textContent="Vos informations et contacts utiles sont disponibles ici.";q("[data-role-context-label]").textContent="Espace local";q("[data-role-context-title]").textContent="Informations et contacts utiles";const labels=[["Ressources","Échange confidentiel"],["Ajouter une note","Sans identité ni média"],["Trouver un accueil","Lieux ouverts à proximité"]];qa("[data-role-quick]").forEach((button,index)=>{q("[data-role-quick-title]",button).textContent=labels[index][0];q("[data-role-quick-description]",button).textContent=labels[index][1]})}
+}
+
+function toggleDiscreetMode(force){
+  if(state.role!=="Jeune"){showToast("Le mode discret est disponible dans l’espace Jeune.");return}
+  state.preferences.discreetMode=typeof force==="boolean"?force:!state.preferences.discreetMode;savePreferences();applyRole(state.role);applyPreferences();closeSheets();setView("home");showToast(state.preferences.discreetMode?"Écran neutre activé.":"Espace LIEN restauré.");
 }
 
 function showToast(message){
@@ -95,6 +163,7 @@ function renderRoles(){
 
 function applyRole(role,customFirstName){
   if(!roles[role])return;state.role=role;localStorage.setItem("lien-role-v3",role);const profile=roles[role];
+  if(role!=="Jeune"&&state.preferences.discreetMode){state.preferences.discreetMode=false;savePreferences()}
   const journey=roleJourneys[role]||roleJourneys.Habitant;
   const firstName=customFirstName||profile.firstName;const name=customFirstName?`${customFirstName} ${profile.name.includes(".")?profile.name.slice(-2):""}`.trim():profile.name;
   const values={...profile,name,greeting:profile.greeting.replace(profile.firstName,firstName),role};
@@ -105,9 +174,11 @@ function applyRole(role,customFirstName){
   qa("[data-role-quick]").forEach((button,index)=>{const quick=journey.quick[index];if(!quick)return;button.dataset.roleCommand=quick.command;q("[data-role-quick-title]",button).textContent=quick.title;q("[data-role-quick-description]",button).textContent=quick.description});
   qa('[data-role-access="professional"]').forEach(element=>element.style.display=profile.access.includes("professional")?"":"none");
   qa('[data-role-access="admin"]').forEach(element=>element.style.display=profile.access.includes("admin")?"":"none");
+  qa('[data-role-access="young"]').forEach(element=>element.hidden=role!=="Jeune");
+  const verification=q("[data-professional-verification]");if(verification)verification.hidden=!profile.access.includes("professional");
   const professional=profile.access.includes("professional");q("[data-map-privacy-title]").textContent=professional?"Mode professionnel vérifié":"Mode public protégé";q("[data-map-privacy-text]").textContent=professional?"La carte reste agrégée ; les détails sensibles sont réservés aux dossiers tracés.":"Aucune adresse, aucun domicile et aucune personne ne sont localisables.";
   if((state.view==="intervention"&&!profile.access.includes("professional"))||(state.view==="admin"&&!profile.access.includes("admin")))setView("home");
-  renderRoles();
+  renderRoles();renderNotifications();applyPreferences();
 }
 
 function setOnboardStep(step){
@@ -121,7 +192,8 @@ function closeOnboarding(){q("[data-onboarding]").classList.remove("open");docum
 function resetReport(){
   state.reportStep=1;state.report={type:null,attachments:[],minor:false};qa("[data-report-step]").forEach(panel=>panel.classList.toggle("active",panel.dataset.reportStep==="1"));
   qa(".sheet-steps i").forEach((dot,index)=>dot.classList.toggle("active",index===0));qa("[data-report-type]").forEach(button=>button.classList.remove("selected"));
-  const firstNext=q('[data-report-step="1"] [data-report-next]');if(firstNext)firstNext.disabled=true;q("[data-attachments]").innerHTML="";q("[data-report-minor]").checked=false;q("[data-minor-safety]").hidden=true;qa("[data-media]").forEach(button=>button.disabled=false);
+  const firstNext=q('[data-report-step="1"] [data-report-next]');if(firstNext)firstNext.disabled=true;q("[data-attachments]").innerHTML="";q("[data-report-minor]").checked=false;q("[data-minor-safety]").hidden=true;qa("[data-media]").forEach(button=>button.disabled=false);q("[data-report-description]").value="";q("[data-report-location]").value="";
+  setReportResult("Signal transmis pour validation","Merci d’avoir créé du lien.","Le signalement n’est pas encore une alerte publique. Un médiateur va le vérifier et rechercher d’éventuelles corroborations.","Référence confidentielle · statut : en attente");
 }
 
 function setReportStep(step){
@@ -146,10 +218,18 @@ async function toggleAudioRecording(button){
   }catch{showToast("Le microphone nécessite une autorisation dans le navigateur.")}
 }
 
+function setReportResult(kicker,title,text,status){
+  q("[data-report-result-kicker]").textContent=kicker;q("[data-report-result-title]").textContent=title;q("[data-report-result-text]").textContent=text;q("[data-report-result-status]").textContent=status;
+}
+
 function submitReport(){
+  const now=Date.now(),reports=readStoredReports(),recent=reports.filter(report=>now-new Date(report.createdAt).getTime()<15*60*1000);
+  if(recent.length>=3){q("[data-report-reference]").textContent="#LN-CONTRÔLE";setReportResult("Protection anti-abus activée","Envoi mis en attente.","Plusieurs envois ont été effectués récemment sur cet appareil. Aucune alerte publique n’est créée ; un médiateur peut être contacté si la situation évolue.","Limitation locale temporaire · recours possible");return}
+  const location=q("[data-report-location]")?.value.trim()||"Zone non précisée";const duplicate=recent.find(report=>report.type===state.report.type&&(report.location===location||location==="Zone non précisée"));
   const reference=`#LN-${2050+Math.floor(Math.random()*40)}`;q("[data-report-reference]").textContent=reference;
-  const record={reference,type:state.report.type,description:q("[data-report-description]")?.value||"",location:q("[data-report-location]")?.value||"Zone non précisée",minor:state.report.minor,createdAt:new Date().toISOString(),status:"En attente d’examen professionnel"};
-  const reports=readStoredReports();reports.unshift(record);localStorage.setItem("lien-reports",JSON.stringify(reports.slice(0,20)));
+  const record={reference,type:state.report.type,description:q("[data-report-description]")?.value||"",location,minor:state.report.minor,createdAt:new Date().toISOString(),status:duplicate?"Rapprochement anti-doublon":"En attente d’examen professionnel"};
+  reports.unshift(record);localStorage.setItem("lien-reports",JSON.stringify(reports.slice(0,20)));
+  if(duplicate)setReportResult("Signal rapproché d’une observation récente","Votre observation complète le dossier.","Un signal similaire existe déjà dans cette zone. Les éléments sont regroupés pour éviter plusieurs alertes et seront examinés humainement.","Référence confidentielle · rapprochement à vérifier");
 }
 
 function openSignal(id){
@@ -162,7 +242,7 @@ function openSignal(id){
 function renderMessages(channel){
   const data=channelData[channel]||channelData.quartier;state.channel=channel;q("[data-channel-title]").textContent=data.title;q("[data-channel-avatar]").textContent=data.avatar;
   q(".chat-head small").innerHTML=`<i></i> ${data.meta}`;
-  q("[data-messages]").innerHTML=data.messages.map(message=>message.system?`<div class="system-message">${escapeHTML(message.system)}</div>`:`<article class="message${message.me?" me":""}"><span class="message-avatar">${escapeHTML(message.initials)}</span><div class="message-body"><div class="message-head"><strong>${escapeHTML(message.author)}</strong><time>${escapeHTML(message.time)}</time></div><p>${escapeHTML(message.text)}</p></div></article>`).join("");
+  q("[data-messages]").innerHTML=data.messages.map(message=>message.system?`<div class="system-message">${escapeHTML(message.system)}</div>`:`<article class="message${message.me?" me":""}"><span class="message-avatar">${escapeHTML(message.initials)}</span><div class="message-body"><div class="message-head"><strong>${escapeHTML(message.author)}</strong><time>${escapeHTML(message.time)}</time></div><p>${escapeHTML(message.text)}</p></div>${message.me?"":`<button class="message-report" data-action="report-content" aria-label="Signaler le message de ${escapeHTML(message.author)}"><svg><use href="#i-info"/></svg></button>`}</article>`).join("");
   const box=q("[data-messages]");box.scrollTop=box.scrollHeight;
 }
 
@@ -191,13 +271,14 @@ function submitSignalComment(){
 
 function runRoleCommand(command){
   if(command==="contact"){openSheet("contact");return}
+  if(command==="young-support"){openSheet("young-help");return}
   if(command==="report"||command==="minor-report"){resetReport();if(command==="minor-report"){state.report.minor=true;q("[data-report-minor]").checked=true;q("[data-minor-safety]").hidden=false;qa("[data-media]").forEach(button=>button.disabled=true)}openSheet("report");return}
   if(command==="safe"){activeMapFilter="safe";setView("map");setMapFilterUI("safe");return}
   if(command==="map"){activeMapFilter="all";setView("map");setMapFilterUI("all");return}
   if(command==="admin"||command==="intervention"){setView(command);return}
   if(command==="parents"||command==="associations"){setView("channels");renderMessages(command);return}
   if(command==="activities"){setView("home");setTimeout(()=>q(".activity-list")?.scrollIntoView({behavior:"smooth",block:"start"}),120);return}
-  if(command==="availability")showToast("Votre commerce refuge est indiqué ouvert jusqu’à 20h30.");
+  if(command==="availability"){updateSafePlaceUI();openSheet("safe-places")}
 }
 
 function setMapFilterUI(filter){
@@ -233,7 +314,19 @@ function finishReview(confirmed){
   if(!state.reviewItem)return;const item=state.reviewItem;if(confirmed){item.style.background="#eff8e8";q("strong",item).textContent=`${q("strong",item).textContent} · affecté`;q("button",item).textContent="Affecté ✓";q("button",item).disabled=true;showToast("Signal qualifié, affecté et inscrit au journal d’audit.")}else{item.remove();showToast("Signal classé sans suite avec motif et trace d’audit.")}state.reviewItem=null;closeSheets();
 }
 
-renderRoles();applyRole(state.role);renderMessages(state.channel);
+function resetInterventionClose(){
+  state.selectedOutcome=null;qa("[data-outcome]").forEach(button=>button.classList.remove("active"));q("[data-intervention-note]").value="";q('[data-action="confirm-close-intervention"]').disabled=true;
+}
+
+function updateInterventionCloseState(){
+  q('[data-action="confirm-close-intervention"]').disabled=!(state.selectedOutcome&&q("[data-intervention-note]").value.trim().length>=12);
+}
+
+function finishIntervention(){
+  const intervention=q(".live-intervention"),pill=q(".live-pill",intervention);pill.innerHTML='<i></i> Clôturée';pill.classList.remove("coral");qa(".intervention-timeline span",intervention).forEach(step=>{step.classList.add("done");step.classList.remove("active")});const steps=qa(".intervention-timeline b",intervention);if(steps[3])steps[3].textContent="15:28";if(steps[4])steps[4].textContent="15:34";qa(".intervention-actions button",intervention).forEach(button=>button.disabled=true);closeSheets();showToast(`Intervention clôturée : ${state.selectedOutcome}. Suivi programmé.`);
+}
+
+renderRoles();applyRole(state.role);renderMessages(state.channel);updateSafePlaceUI();updateImpact();
 
 qa("[data-view-link]").forEach(button=>button.addEventListener("click",event=>{event.preventDefault();setView(button.dataset.viewLink)}));
 qa("[data-close-sheet]").forEach(button=>button.addEventListener("click",()=>closeSheets()));q("[data-backdrop]").addEventListener("click",()=>closeSheets());
@@ -242,6 +335,7 @@ document.addEventListener("click",event=>{
   const roleChoice=event.target.closest("[data-role-choice]");if(roleChoice){applyRole(roleChoice.dataset.roleChoice);closeSheets();showToast(`Espace ${roleChoice.dataset.roleChoice} activé.`);return}
   const roleQuick=event.target.closest("[data-role-quick]");if(roleQuick){runRoleCommand(roleQuick.dataset.roleCommand);return}
   const signalButton=event.target.closest("[data-signal-id]");if(signalButton){openSignal(signalButton.dataset.signalId);return}
+  const outcomeButton=event.target.closest("[data-outcome]");if(outcomeButton){state.selectedOutcome=outcomeButton.dataset.outcome;qa("[data-outcome]").forEach(button=>button.classList.toggle("active",button===outcomeButton));updateInterventionCloseState();return}
   const actionButton=event.target.closest("[data-action]");if(!actionButton)return;const action=actionButton.dataset.action;
   if(action==="role-picker")openSheet("roles");
   if(action==="report"){resetReport();openSheet("report")}
@@ -249,14 +343,20 @@ document.addEventListener("click",event=>{
   if(action==="contact-mediator"){if(q("[data-sos]").classList.contains("open"))closeSos();openSheet("contact")}
   if(action==="open-private-chat"){closeSheets();setView("channels");renderMessages("parents");showToast("Discussion privée ouverte avec Karim.")}
   if(action==="settings")openSheet("settings");
+  if(action==="account-security")openSheet("account");
+  if(action==="notification-settings"||action==="notifications"){renderNotifications();openSheet("notifications")}
+  if(action==="accessibility-settings")openSheet("accessibility");
+  if(action==="toggle-discreet")toggleDiscreetMode();
+  if(action==="quick-exit")toggleDiscreetMode(true);
+  if(action==="minor-report")runRoleCommand("minor-report");
   if(action==="score-explain")openSheet("score");
   if(action==="map-settings")openSheet("map-privacy");
   if(action==="review-signal")openReview(actionButton);
   if(action==="confirm-review")finishReview(true);
   if(action==="archive-review"){if(q("[data-review-note]").value.trim().length<12)showToast("Ajoutez une note de décision d’au moins 12 caractères.");else finishReview(false)}
   if(action==="show-safe-places"){closeSheets();activeMapFilter="safe";setView("map");setMapFilterUI("safe")}
-  if(action==="moderation-help")showToast("Touchez longuement un message pour le signaler à la modération, sans réponse publique.");
-  if(action==="notifications")showToast("3 mises à jour : une médiation, un atelier et un signal corroboré.");
+  if(action==="moderation-help")showToast("Utilisez le bouton ! à côté d’un message pour le signaler confidentiellement.");
+  if(action==="report-content"){state.reportedMessage=actionButton.closest(".message");qa('input[name="content-reason"]').forEach(input=>input.checked=false);openSheet("content-report")}
   if(action==="locate"||action==="use-location"){
     if(!navigator.geolocation){showToast("La géolocalisation n’est pas disponible.");return}
     showToast("Demande de localisation en cours…");navigator.geolocation.getCurrentPosition(position=>{const accuracy=Math.round(position.coords.accuracy);const field=q("[data-report-location]");if(field)field.value=`Position actuelle · précision environ ${accuracy} m`;showToast("Position utilisée uniquement pour cette action.")},()=>showToast("Localisation refusée. Vous pouvez saisir une zone approximative."),{enableHighAccuracy:false,timeout:8000,maximumAge:60000});
@@ -273,14 +373,30 @@ document.addEventListener("click",event=>{
   if(action==="new-discussion")showToast("Choisissez un médiateur ou un canal autorisé.");
   if(action==="new-intervention")showToast("Nouvelle coordination créée en mode brouillon.");if(action==="join-intervention")showToast("Vous êtes ajouté·e à l’équipe #INT-382.");
   if(action==="open-ops-chat"){setView("channels");renderMessages("mediateurs")}
+  if(action==="toggle-availability"){state.operatorAvailable=!state.operatorAvailable;const bar=q(".ops-command-bar");bar.classList.toggle("unavailable",!state.operatorAvailable);q(".ops-presence",bar).innerHTML=`<i></i> ${state.operatorAvailable?"Disponible":"Indisponible"}`;actionButton.textContent=state.operatorAvailable?"Passer indisponible":"Me rendre disponible";showToast(state.operatorAvailable?"Vous êtes de nouveau mobilisable.":"Vous ne recevrez plus de nouvelle affectation locale.")}
+  if(action==="escalate-intervention")showToast("Le responsable de permanence est informé. Aucune confrontation n’est demandée.");
+  if(action==="close-intervention"){resetInterventionClose();openSheet("intervention-close")}
+  if(action==="confirm-close-intervention")finishIntervention();
+  if(action==="reopen-intervention"){const row=actionButton.closest(".table-row"),status=q(".status",row);status.textContent="Suivi";status.classList.remove("resolved");status.classList.add("monitoring");actionButton.textContent="Réouverte ✓";actionButton.disabled=true;showToast("Intervention réouverte avec une nouvelle trace de suivi.")}
   if(action==="export-interventions"||action==="export-csv"){downloadBlob("lien-export.csv","reference,quartier,statut,duree\nINT-381,Secteur Nord,Resolu,38 min\nINT-380,Les Sentes,Suivi,72 min","text/csv;charset=utf-8");showToast("Export CSV généré.")}
   if(action==="print-report")window.print();
-  if(["manage-users","manage-mediators","manage-districts","manage-safe","moderation","audit-log","badges"].includes(action))showToast("Module ouvert en mode démonstration.");
+  if(action==="manage-safe"){updateSafePlaceUI();openSheet("safe-places")}
+  if(action==="moderation")openSheet("moderation");
+  if(["manage-users","manage-mediators","manage-districts","audit-log","badges"].includes(action))showToast("Module ouvert en mode démonstration.");
+  if(action==="toggle-safe-availability"){state.safeAvailable=!state.safeAvailable;localStorage.setItem("lien-safe-available",String(state.safeAvailable));updateSafePlaceUI();showToast(state.safeAvailable?"Lieu indiqué disponible sur cet appareil.":"Lieu indiqué fermé sur cet appareil.")}
+  if(action==="refresh-safe-qr"){q(".qr-pattern").style.transform=`rotate(${Math.floor(Math.random()*4)*90}deg)`;showToast("Nouvel aperçu QR généré localement.")}
+  if(action==="merge-reports"||action==="review-content"||action==="audit-account"){actionButton.textContent=action==="merge-reports"?"Rapprochés ✓":action==="review-content"?"Pris en charge ✓":"Audit ouvert ✓";actionButton.disabled=true;showToast("Décision locale préparée pour validation humaine.")}
+  if(action==="submit-content-report"){const reason=q('input[name="content-reason"]:checked');if(!reason){showToast("Choisissez un motif avant de transmettre.");return}if(state.reportedMessage){q(".message-body p",state.reportedMessage).textContent="Message masqué après votre signalement.";q(".message-report",state.reportedMessage)?.remove()}state.reportedMessage=null;closeSheets();showToast("Message masqué localement et transmis à la file de modération.")}
+  if(action==="mark-notifications-read"){state.notificationsRead=true;localStorage.setItem("lien-notifications-read","true");renderNotifications();showToast("Notifications marquées comme lues.")}
+  if(action==="change-email")showToast("Modification préparée ; une vérification serveur sera nécessaire.");
+  if(action==="verify-phone")showToast("Revérification préparée ; aucun SMS n’est envoyé sans backend.");
+  if(action==="submit-verification"){actionButton.innerHTML='<svg><use href="#i-check"/></svg> Demande préparée';actionButton.disabled=true;showToast("Dossier enregistré localement, prêt pour une future validation humaine.")}
+  if(action==="revoke-sessions")showToast("Cet appareil est conservé. La fermeture distante nécessitera le backend.");
   if(action==="permission-location"||action==="permission-media")showToast("Cette permission sera demandée uniquement au moment nécessaire.");
   if(action==="retention")showToast("Conservation ordinaire : 90 jours maximum, puis suppression automatique.");
   if(action==="access-history")showToast("Aucun accès professionnel inhabituel détecté sur les 30 derniers jours.");
-  if(action==="download-data"){downloadBlob("mes-donnees-lien.json",JSON.stringify({role:state.role,reports:readStoredReports()},null,2),"application/json");showToast("Copie de vos données générée.")}
-  if(action==="delete-account"){localStorage.removeItem("lien-role-v3");localStorage.removeItem("lien-reports");localStorage.removeItem("lien-onboarded-v3");closeSheets();showToast("Données locales supprimées.");setTimeout(openOnboarding,500)}
+  if(action==="download-data"){downloadBlob("mes-donnees-lien.json",JSON.stringify({role:state.role,reports:readStoredReports(),preferences:state.preferences},null,2),"application/json");showToast("Copie de vos données générée.")}
+  if(action==="delete-account"){["lien-role-v3","lien-reports","lien-onboarded-v3","lien-preferences","lien-notifications-read","lien-safe-available"].forEach(key=>localStorage.removeItem(key));state.preferences={...defaultPreferences};state.notificationsRead=false;applyPreferences();closeSheets();showToast("Données locales supprimées.");setTimeout(openOnboarding,500)}
 });
 
 qa("[data-report-type]").forEach(button=>button.addEventListener("click",()=>{qa("[data-report-type]").forEach(item=>item.classList.remove("selected"));button.classList.add("selected");state.report.type=button.dataset.reportType;q('[data-report-step="1"] [data-report-next]').disabled=false}));
@@ -288,6 +404,12 @@ qa("[data-report-next]").forEach(button=>button.addEventListener("click",()=>{if
 qa("[data-media]").forEach(button=>button.addEventListener("click",()=>{const media=button.dataset.media;if(media==="audio")toggleAudioRecording(button);else q(`[data-file="${media}"]`).click()}));
 qa("[data-file]").forEach(input=>input.addEventListener("change",()=>{if(input.files?.[0])addAttachment(`${input.dataset.file==="photo"?"Photo":"Vidéo"} · ${input.files[0].name}`)}));
 q("[data-report-minor]").addEventListener("change",event=>{state.report.minor=event.target.checked;q("[data-minor-safety]").hidden=!state.report.minor;qa("[data-media]").forEach(button=>button.disabled=state.report.minor);if(state.report.minor){state.report.attachments=[];q("[data-attachments]").innerHTML="";showToast("Protection mineur activée : ajout de média désactivé.")}});
+
+qa("[data-pref]").forEach(input=>input.addEventListener("change",()=>{state.preferences[input.dataset.pref]=input.checked;savePreferences();applyPreferences();showToast("Préférence enregistrée sur cet appareil.")}));
+qa("[data-pref-value]").forEach(input=>input.addEventListener("change",()=>{state.preferences[input.dataset.prefValue]=input.value;savePreferences();applyPreferences()}));
+qa("[data-text-size]").forEach(button=>button.addEventListener("click",()=>{state.preferences.textSize=button.dataset.textSize;savePreferences();applyPreferences()}));
+q("[data-intervention-note]").addEventListener("input",updateInterventionCloseState);
+q("[data-impact-period]").addEventListener("change",event=>updateImpact(event.target.value));
 
 qa("[data-map-filter]").forEach(button=>button.addEventListener("click",()=>setMapFilterUI(button.dataset.mapFilter)));
 qa("[data-review-check]").forEach(check=>check.addEventListener("change",updateReviewDecisionState));q("[data-review-note]").addEventListener("input",updateReviewDecisionState);
