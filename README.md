@@ -46,6 +46,7 @@ Le dépôt est configuré comme site statique Vercel. Chaque push sur la branche
 - scénarios d'entraînement sans score ni compétition ;
 - parcours testeur guidé avec trois missions, cinq états prédéfinis et réinitialisation complète des données locales ;
 - centre de formation structuré en six modules opérationnels avec objectifs, méthodes terrain, pratiques à éviter, mises en situation et validation locale privée ;
+- parcours de formation filtré par rôle et matrice de canaux autorisés avec contrôle des accès directs ;
 - consignes essentielles en français, français facile, anglais et arabe avec lecture vocale ;
 - système visuel LIEN 5.0 : typographie lisible, espacements cohérents, cartes sans chevauchement et zones tactiles adaptées au mobile ;
 - signalement en liste verticale, messagerie plein écran, navigation basse protégée et profil mobile simplifié ;

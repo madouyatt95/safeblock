@@ -36,7 +36,19 @@ const channelData={
   jeunes:{title:"Canal jeunes",avatar:"J",meta:"24 membres · 2 modérateurs",messages:[{author:"Maya",initials:"MY",time:"15:10",text:"Le nouveau studio musique est ouvert à partir de 18h."},{author:"Yanis · Modérateur",initials:"YA",time:"15:18",text:"Rappel : si une rumeur vous inquiète, envoyez-la en privé à un médiateur au lieu de la repartager."}]},
   mediateurs:{title:"Groupe médiateurs",avatar:"M",meta:"8 membres vérifiés · 3 en ligne",messages:[{author:"Karim",initials:"KB",time:"15:36",text:"Je prends la coordination #INT-382. Arrivée estimée dans 4 minutes."},{author:"Aïcha",initials:"AD",time:"15:39",text:"Je contacte la maison de quartier et reste disponible dans le canal opérationnel."}]},
   associations:{title:"Canal associations",avatar:"A",meta:"12 partenaires · Modéré",messages:[{author:"Passerelles",initials:"PA",time:"14:50",text:"Il reste huit places pour l’atelier de ce soir."},{author:"Maison des jeunes",initials:"MJ",time:"15:02",text:"Nous confirmons l’ouverture de la salle jusqu’à 21h."}]},
-  commercants:{title:"Commerçants refuges",avatar:"C",meta:"8 établissements ouverts",messages:[{author:"Nora",initials:"NB",time:"15:12",text:"Le café est disponible comme point refuge jusqu’à 20h30."},{author:"Karim",initials:"KB",time:"15:15",text:"Merci. Votre disponibilité a été mise à jour sur la carte agrégée."}]}
+  commercants:{title:"Commerçants refuges",avatar:"C",meta:"8 établissements ouverts",messages:[{author:"Nora",initials:"NB",time:"15:12",text:"Le café est disponible comme point refuge jusqu’à 20h30."},{author:"Karim",initials:"KB",time:"15:15",text:"Merci. Votre disponibilité a été mise à jour sur la carte agrégée."}]},
+  collectivites:{title:"Pilotage collectivités",avatar:"CO",meta:"6 agents habilités · Données agrégées",messages:[{author:"Malik",initials:"ML",time:"14:42",text:"Le point hebdomadaire confirme une baisse du délai de première prise en charge."},{author:"Karim",initials:"KB",time:"14:55",text:"Les équipes terrain demandent le maintien des permanences sur les deux prochains créneaux."}]},
+  mediation:{title:"Échange privé avec un médiateur",avatar:"M",meta:"Conversation confidentielle · Karim disponible",messages:[{author:"Karim",initials:"KB",time:"Maintenant",text:"Bonjour. Vous pouvez décrire la situation sans donner de nom, d’adresse précise ni d’information identifiante."}]}
+};
+
+const channelAccess={
+  Habitant:["quartier"],
+  Jeune:["quartier","jeunes"],
+  Parent:["quartier","parents"],
+  Médiateur:["quartier","parents","jeunes","mediateurs","associations","commercants","collectivites"],
+  Association:["quartier","mediateurs","associations"],
+  Commerçant:["quartier","commercants"],
+  Collectivité:["quartier","mediateurs","associations","collectivites"]
 };
 
 const signals={
@@ -244,19 +256,29 @@ function renderTrainingScenario(name){
 
 function completedCourses(){try{const value=JSON.parse(localStorage.getItem("lien-courses")||"[]");return Array.isArray(value)?value:[]}catch{return[]}}
 
-function renderCourses(){
-  const completed=completedCourses(),total=Object.keys(courseData).length,progress=Math.round(completed.length/total*100);
-  q("[data-course-list]").innerHTML=Object.entries(courseData).map(([id,course],index)=>{
-    const recommended=course.audiences.includes("Tous")||course.audiences.includes(state.role);
-    return `<button data-course="${id}"><span>${String(index+1).padStart(2,"0")}</span><div><strong>${escapeHTML(course.title)}</strong><small>${escapeHTML(course.duration)} · ${escapeHTML(course.level)}</small>${recommended?`<em>Recommandé pour ${escapeHTML(state.role)}</em>`:""}</div><b class="course-status ${completed.includes(id)?"done":""}">${completed.includes(id)?"Validé":"Ouvrir"}</b></button>`
-  }).join("");
-  q("[data-course-list]").hidden=false;q("[data-course-detail]").hidden=true;
+function roleCourseEntries(role=state.role){
+  return Object.entries(courseData).filter(([,course])=>course.audiences.includes("Tous")||course.audiences.includes(role));
+}
+
+function updateCourseProgress(){
+  const entries=roleCourseEntries(),visibleIds=new Set(entries.map(([id])=>id)),completed=completedCourses().filter(id=>visibleIds.has(id)),total=entries.length,progress=total?Math.round(completed.length/total*100):0;
   q("[data-course-progress]").textContent=`${completed.length} module${completed.length>1?"s":""} validé${completed.length>1?"s":""} sur ${total}`;
   q("[data-course-progress-bar]").style.width=`${progress}%`;
+  q("[data-learning-description]").textContent=`Parcours ${state.role} : ${total} module${total>1?"s":""} adapté${total>1?"s":""}, avec protocoles terrain et mises en situation. La progression reste privée sur cet appareil.`;
+}
+
+function renderCourses(){
+  const completed=completedCourses(),entries=roleCourseEntries();
+  q("[data-course-list]").innerHTML=entries.map(([id,course],index)=>{
+    const scope=course.audiences.includes("Tous")?"Socle commun":`Parcours ${state.role}`;
+    return `<button data-course="${id}"><span>${String(index+1).padStart(2,"0")}</span><div><strong>${escapeHTML(course.title)}</strong><small>${escapeHTML(course.duration)} · ${escapeHTML(course.level)}</small><em>${escapeHTML(scope)}</em></div><b class="course-status ${completed.includes(id)?"done":""}">${completed.includes(id)?"Validé":"Ouvrir"}</b></button>`
+  }).join("");
+  q("[data-course-list]").hidden=false;q("[data-course-detail]").hidden=true;
+  updateCourseProgress();
 }
 
 function openCourse(id){
-  const course=courseData[id];if(!course)return;state.activeCourse=id;state.courseValidated=false;q("[data-course-list]").hidden=true;q("[data-course-detail]").hidden=false;
+  const course=courseData[id],allowed=roleCourseEntries().some(([courseId])=>courseId===id);if(!course||!allowed){showToast("Ce module n’appartient pas au parcours de ce rôle.");renderCourses();return}state.activeCourse=id;state.courseValidated=false;q("[data-course-list]").hidden=true;q("[data-course-detail]").hidden=false;
   q("[data-course-tag]").textContent=`${course.level} · ${course.duration}`;q("[data-course-title]").textContent=course.title;q("[data-course-intro]").textContent=course.intro;q("[data-course-audience]").textContent=course.audiences.includes("Tous")?"Tous les rôles":course.audiences.join(" · ");
   q("[data-course-objectives]").innerHTML=course.objectives.map(item=>`<li>${escapeHTML(item)}</li>`).join("");
   q("[data-course-sections]").innerHTML=course.sections.map(section=>`<article><h4>${escapeHTML(section.title)}</h4><p>${escapeHTML(section.body)}</p><span><svg><use href="#i-star"/></svg>${escapeHTML(section.key)}</span></article>`).join("");
@@ -404,7 +426,7 @@ function applyRole(role,customFirstName){
   const verification=q("[data-professional-verification]");if(verification)verification.hidden=!profile.access.includes("professional");
   const professional=profile.access.includes("professional");q("[data-map-privacy-title]").textContent=professional?"Mode professionnel vérifié":"Mode public protégé";q("[data-map-privacy-text]").textContent=professional?"La carte reste agrégée ; les détails sensibles sont réservés aux dossiers tracés.":"Aucune adresse, aucun domicile et aucune personne ne sont localisables.";
   if((state.view==="intervention"&&!profile.access.includes("professional"))||(state.view==="admin"&&!profile.access.includes("admin")))setView("home");
-  renderRoles();renderNotifications();applyPreferences();
+  renderRoles();renderNotifications();renderChannelAccess();renderMessages(state.channel);renderCourses();applyPreferences();
 }
 
 function setOnboardStep(step){
@@ -465,8 +487,16 @@ function openSignal(id){
   openSheet("signal");
 }
 
+function roleChannels(role=state.role){return channelAccess[role]||["quartier"]}
+
+function renderChannelAccess(){
+  const allowed=roleChannels();if(state.channel==="mediation"||!allowed.includes(state.channel))state.channel=allowed[0];
+  qa("[data-channel]").forEach(button=>{const visible=allowed.includes(button.dataset.channel);button.hidden=!visible;button.classList.toggle("active",visible&&button.dataset.channel===state.channel)});
+  const scope=q("[data-channel-scope]"),count=q("[data-channel-count]");if(scope)scope.textContent=`${allowed.length} espace${allowed.length>1?"s":""} autorisé${allowed.length>1?"s":""} pour le rôle ${state.role}. Les autres canaux restent invisibles et inaccessibles.`;if(count)count.textContent=`${allowed.length} autorisé${allowed.length>1?"s":""}`;
+}
+
 function renderMessages(channel){
-  const data=channelData[channel]||channelData.quartier;state.channel=channel;q("[data-channel-title]").textContent=data.title;q("[data-channel-avatar]").textContent=data.avatar;
+  const allowed=roleChannels(),target=channel==="mediation"?"mediation":allowed.includes(channel)?channel:allowed[0],data=channelData[target]||channelData.quartier;state.channel=target;qa("[data-channel]").forEach(button=>button.classList.toggle("active",!button.hidden&&button.dataset.channel===target));q("[data-channel-title]").textContent=data.title;q("[data-channel-avatar]").textContent=data.avatar;
   q(".chat-head small").innerHTML=`<i></i> ${data.meta}`;
   q("[data-messages]").innerHTML=data.messages.map(message=>message.system?`<div class="system-message">${escapeHTML(message.system)}</div>`:`<article class="message${message.me?" me":""}"><span class="message-avatar">${escapeHTML(message.initials)}</span><div class="message-body"><div class="message-head"><strong>${escapeHTML(message.author)}</strong><time>${escapeHTML(message.time)}</time></div><p>${escapeHTML(message.text)}</p></div>${message.me?"":`<button class="message-report" data-action="report-content" aria-label="Signaler le message de ${escapeHTML(message.author)}"><svg><use href="#i-info"/></svg></button>`}</article>`).join("");
   const box=q("[data-messages]");box.scrollTop=box.scrollHeight;
@@ -578,7 +608,7 @@ document.addEventListener("click",event=>{
   if(action==="report"){markTestMission("report");resetReport();openSheet("report")}
   if(action==="sos")openSos();if(action==="close-sos")closeSos();if(action==="start-sos")startSos();if(action==="cancel-sos")cancelSos();
   if(action==="contact-mediator"){if(q("[data-sos]").classList.contains("open"))closeSos();openSheet("contact")}
-  if(action==="open-private-chat"){closeSheets();setView("channels");renderMessages("parents");showToast("Discussion privée ouverte avec Karim.")}
+  if(action==="open-private-chat"){closeSheets();setView("channels");renderMessages("mediation");showToast("Discussion privée ouverte avec Karim.")}
   if(action==="settings")openSheet("settings");
   if(action==="account-security")openSheet("account");
   if(action==="notification-settings"||action==="notifications"){renderNotifications();openSheet("notifications")}
@@ -648,7 +678,7 @@ document.addEventListener("click",event=>{
   if(action==="clear-safety-plan"){state.safetyPlan=null;localStorage.removeItem("lien-safety-plan");renderSafetyPlan();showToast("Plan personnel supprimé de cet appareil.")}
   if(action==="download-offline-guide"){const plan=state.safetyPlan?`\nMon lieu sûr : ${state.safetyPlan.safePlace}\nContact : ${state.safetyPlan.trustedName||"à définir"}`:"";downloadBlob("lien-kit-hors-connexion.txt",`LIEN — CONSIGNES ESSENTIELLES\n\n1. Éloignez-vous et ne confrontez personne.\n2. Rejoignez un lieu ouvert ou un adulte de confiance.\n3. Utilisez AIDE en cas de danger immédiat.${plan}`);showToast("Mémo hors connexion généré.")}
   if(action==="confirm-install"){if(state.deferredInstall){state.deferredInstall.prompt();state.deferredInstall.userChoice.then(choice=>{if(choice.outcome==="accepted"){updateInstallUI(true);closeSheets();showToast("LIEN a été ajouté à votre appareil.")}state.deferredInstall=null})}else{q("[data-install-help]").textContent="Ouvrez le menu Partager ou le menu du navigateur, puis choisissez « Ajouter à l’écran d’accueil » ou « Installer l’application ».";showToast("Suivez les instructions affichées pour ce navigateur.")}}
-  if(action==="complete-course"&&state.activeCourse){const completed=completedCourses();if(!completed.includes(state.activeCourse)&&!state.courseValidated){showToast("Validez d’abord la mise en situation.");return}if(!completed.includes(state.activeCourse)){completed.push(state.activeCourse);localStorage.setItem("lien-courses",JSON.stringify(completed))}actionButton.textContent="Module validé sur cet appareil ✓";actionButton.disabled=true;q("[data-course-progress]").textContent=`${completed.length} module${completed.length>1?"s":""} validé${completed.length>1?"s":""} sur ${Object.keys(courseData).length}`;q("[data-course-progress-bar]").style.width=`${Math.round(completed.length/Object.keys(courseData).length*100)}%`;showToast("Module validé : acquis enregistrés sans score ni classement.")}
+  if(action==="complete-course"&&state.activeCourse){const completed=completedCourses();if(!completed.includes(state.activeCourse)&&!state.courseValidated){showToast("Validez d’abord la mise en situation.");return}if(!completed.includes(state.activeCourse)){completed.push(state.activeCourse);localStorage.setItem("lien-courses",JSON.stringify(completed))}actionButton.textContent="Module validé sur cet appareil ✓";actionButton.disabled=true;updateCourseProgress();showToast("Module validé : acquis enregistrés sans score ni classement.")}
   if(action==="read-safety"){const language=safetyLanguages[state.preferences.safetyLanguage]||safetyLanguages.fr;if(!("speechSynthesis" in window)){showToast("La lecture vocale n’est pas disponible sur cet appareil.");return}speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(language.text);utterance.lang=language.lang;q("[data-safety-preview]").classList.add("speaking");utterance.onend=()=>q("[data-safety-preview]").classList.remove("speaking");speechSynthesis.speak(utterance)}
   if(action==="permission-location"||action==="permission-media")showToast("Cette permission sera demandée uniquement au moment nécessaire.");
   if(action==="retention")showToast("Conservation ordinaire : 90 jours maximum, puis suppression automatique.");

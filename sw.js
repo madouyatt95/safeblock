@@ -1,5 +1,5 @@
-const CACHE = "lien-v5.1.6-test-and-learning";
-const ASSETS = ["./", "./index.html", "./styles.css?v=5.1.6", "./app.js?v=5.1.6", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
+const CACHE = "lien-v5.2.1-role-paths-and-mobile";
+const ASSETS = ["./", "./index.html", "./styles.css?v=5.2.1", "./app.js?v=5.2.1", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
