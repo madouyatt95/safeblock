@@ -136,7 +136,8 @@ body.focus-mode [data-view="home"]>.home-grid,body.focus-mode [data-view="home"]
 .alert-card em{font-size:var(--type-meta);line-height:1.35}
 .alert-card>b{font-size:var(--type-caption);width:26px;height:26px}
 .quick-action{min-height:116px;padding:18px;gap:14px}
-.quick-action>span:nth-of-type(3){display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.quick-action>span:nth-of-type(3){align-self:stretch;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px}
+.quick-action .quick-icon{align-self:center}
 .quick-action strong{font-size:var(--type-card);line-height:1.3}
 .quick-action small{font-size:13px;line-height:1.45;margin:0}
 .quick-num{font-size:var(--type-caption)}
@@ -291,11 +292,12 @@ body.text-large .prevention-tools{grid-template-columns:1fr}
   .prevention-tools{gap:10px}
   .prevention-tools>button{padding:12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:9px;min-height:122px}
   .prevention-tools>button>span:last-child{width:100%;align-items:flex-start}
-  .peace-card{height:405px;padding:22px 20px}
+  .peace-card{height:460px;padding:22px 20px}
   .peace-copy h2{font-size:37px;line-height:.96}
   .index-explain{top:238px;left:20px}
-  .confidence{top:293px}
-  .score-ring{width:150px;height:150px;bottom:57px}
+  .confidence{top:300px;width:calc(100% - 170px);align-items:flex-start}
+  .score-ring{width:150px;height:150px;right:-15px;bottom:85px}
+  .score-ring>div{display:flex;align-items:baseline;justify-content:center;gap:3px}
   .section-title{margin:28px 0 14px}
   .section-title h2{font-size:24px;line-height:1.1}
   .alert-strip{gap:12px}
@@ -333,6 +335,8 @@ body.text-large .prevention-tools{grid-template-columns:1fr}
   .channels-view .page-intro h1{font-size:31px}
   .channels-view .page-intro p{display:none}
   .messenger{height:auto;min-height:0;flex:1;border-radius:24px}
+  .mobile-channel-tabs{height:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:8px;overflow:visible}
+  .mobile-channel-tabs button{width:100%;min-height:38px;padding:0 4px;overflow:hidden;text-overflow:ellipsis}
   .chat-panel,.messages{min-height:0}
   .safety-banner{align-items:flex-start;margin:10px 10px 0}
   .safety-banner span{flex:1}
@@ -368,7 +372,20 @@ body.text-large .prevention-tools{grid-template-columns:1fr}
   .top-actions{gap:5px}
   .prevention-lead>div{grid-template-columns:1fr}
   .prevention-tools{grid-template-columns:1fr}
-  .peace-card{height:420px}
+  .peace-card{height:480px}
+  .confidence{top:306px;width:calc(100% - 140px)}
+  .score-ring{width:136px;height:136px;bottom:103px}
+  .channels-view .page-intro{gap:6px;margin-bottom:7px}
+  .channels-view .page-intro h1{font-size:28px;margin-bottom:5px}
+  .channels-view .page-intro .primary-button{min-height:42px}
+  .mobile-channel-tabs{gap:5px;padding:6px}
+  .mobile-channel-tabs button{min-height:32px;padding:0 2px;font-size:11px}
+  .chat-head{height:70px;padding:9px}
+  .chat-actions{gap:3px}
+  .chat-actions button,.message-form button{width:36px;height:36px}
+  .safety-banner{margin-top:7px;padding:8px;gap:6px;font-size:11px;line-height:1.3}
+  .safety-banner button{min-height:34px;padding:0 5px;font-size:11px}
+  .message-form{padding:7px;gap:4px}
   .quick-action{grid-template-columns:48px minmax(0,1fr) 18px;padding:15px;gap:11px}
   .quick-icon{width:48px;height:48px}
   .activity{grid-template-columns:50px minmax(0,1fr)}
