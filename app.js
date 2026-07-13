@@ -77,10 +77,104 @@ const trainingScenarios={
 };
 
 const courseData={
-  distance:{tag:"5 minutes · tous les rôles",title:"Observer sans s’exposer",intro:"Reconnaître ce qui est utile sans se rapprocher ni identifier une personne.",points:["Décrire des faits visibles, pas des intentions.","Utiliser une zone approximative.","Quitter les lieux si la tension augmente."]},
-  listen:{tag:"6 minutes · parents et associations",title:"Écouter sans juger",intro:"Créer un échange qui permet à un jeune de demander de l’aide sans pression.",points:["Poser une question ouverte et courte.","Ne pas promettre un secret absolu en cas de danger.","Proposer plusieurs adultes ou lieux sûrs."]},
-  refuge:{tag:"7 minutes · commerçants",title:"Accueillir dans un lieu refuge",intro:"Mettre une personne à l’abri tout en protégeant l’équipe du commerce.",points:["Installer la personne dans un espace visible et calme.","Ne pas sortir confronter la situation.","Contacter un référent selon la charte locale."]},
-  data:{tag:"4 minutes · professionnels",title:"Protéger les données sensibles",intro:"Minimiser les informations pendant la qualification et le suivi.",points:["Séparer identité, position et contenu.","Tracer tout accès professionnel.","Supprimer les données dès qu’elles ne sont plus nécessaires."]}
+  observe:{
+    duration:"12 minutes",level:"Fondamentaux",audiences:["Tous"],title:"Observer et qualifier sans exposer",
+    intro:"Produire une information utile sans se rapprocher, enquêter, filmer inutilement ni attribuer d’intention à une personne.",
+    objectives:["Séparer un fait observable d’une interprétation.","Décrire une zone sans révéler une adresse ou une identité.","Savoir interrompre l’observation dès que le risque augmente."],
+    sections:[
+      {title:"1. La sécurité précède l’information",body:"Une observation n’est utile que si elle est déjà visible depuis un endroit sûr. On ne change pas de trajectoire, on ne suit personne et on ne cherche jamais un meilleur angle.",key:"Se déplacer vers un lieu ouvert vaut toujours mieux que compléter un signalement."},
+      {title:"2. Décrire des comportements, jamais des profils",body:"Indiquez des actions concrètes, une durée approximative et les éléments matériels visibles. L’âge supposé, l’origine, la tenue ou l’appartenance à un groupe ne prouvent aucun risque.",key:"Écrire « échanges de menaces audibles » plutôt que « groupe dangereux »."},
+      {title:"3. Réduire les données au strict nécessaire",body:"Une zone de quelques centaines de mètres, un créneau et une description factuelle suffisent souvent. Les noms, visages, plaques et domiciles ne doivent pas être collectés sans nécessité opérationnelle validée.",key:"Moins de données, mais des données plus fiables."}
+    ],
+    protocolTitle:"Méthode FAITS",protocol:["F — Fuir le risque et garder une distance sûre.","A — Actions observées : décrire uniquement ce qui est visible ou audible.","I — Informations minimales : heure, zone approximative, évolution.","T — Transmettre dans le canal protégé, sans publication publique.","S — Stopper l’observation et rejoindre un lieu sûr."],
+    do:["Employer des verbes d’action et signaler ce qui change.","Dire clairement lorsqu’une information est incertaine."],
+    avoid:["Filmer pour obtenir une preuve ou provoquer une réaction.","Déduire une intention à partir de l’apparence d’une personne."],
+    quiz:{context:"Vous entendez une dispute depuis l’entrée d’un commerce.",question:"Quelle information est la plus responsable ?",choices:[{text:"« Deux personnes crient depuis environ cinq minutes, zone de la place ; je reste dans le commerce. »",correct:true,feedback:"Exact. Le message décrit des faits, situe approximativement et confirme que l’observateur reste en sécurité."},{text:"« Deux jeunes suspects préparent sûrement une bagarre. »",correct:false,feedback:"Cette formulation profile les personnes et attribue une intention non observée."},{text:"« Je vais sortir filmer pour que le médiateur comprenne mieux. »",correct:false,feedback:"Sortir ou filmer augmente le risque et peut aggraver la situation."}]}
+  },
+  deescalation:{
+    duration:"15 minutes",level:"Intermédiaire",audiences:["Parent","Médiateur","Association","Collectivité"],title:"Désescalade et médiation de premier niveau",
+    intro:"Créer les conditions d’un apaisement sans arbitrer le conflit, désigner un responsable ou se substituer aux professionnels habilités.",
+    objectives:["Reconnaître les signes d’une montée en tension.","Employer une communication courte et non accusatoire.","Savoir passer le relais avant la perte de contrôle."],
+    sections:[
+      {title:"1. Lire la dynamique, pas chercher un coupable",body:"Le volume de voix, la réduction des distances, l’arrivée de tiers ou les appels au rassemblement sont des indices d’évolution. Ils servent à décider d’un retrait ou d’un relais, jamais à juger les personnes.",key:"Observer la trajectoire de la situation : baisse, stabilité ou aggravation."},
+      {title:"2. Poser un cadre simple",body:"Parlez lentement, utilisez des phrases courtes et proposez une seule action réalisable : s’éloigner, rejoindre un lieu calme ou parler séparément à un référent. Évitez les injonctions humiliantes.",key:"« On peut se déplacer ici pour parler au calme » est plus apaisant que « Calmez-vous »."},
+      {title:"3. Définir sa limite d’intervention",body:"Un parent, une association ou un commerçant n’a pas à séparer physiquement des personnes. Dès qu’une menace, une arme, une blessure ou une impossibilité de dialogue apparaît, il faut se retirer et alerter le service compétent.",key:"Le passage de relais est une compétence, pas un échec."}
+    ],
+    protocolTitle:"Méthode CALME",protocol:["C — Créer de la distance et une issue sûre.","A — Accueillir l’émotion sans valider les accusations.","L — Limiter la discussion à un besoin immédiat.","M — Mobiliser un médiateur ou un référent identifié.","E — Escalader vers les secours si le danger devient immédiat."],
+    do:["Reformuler le besoin immédiat sans reprendre les insultes.","Proposer deux options sûres et laisser un choix réel."],
+    avoid:["Chercher qui a commencé ou imposer des excuses sur place.","Promettre une confidentialité absolue lorsqu’une personne est en danger."],
+    quiz:{context:"Deux adolescents s’invectivent devant une activité associative.",question:"Quelle première phrase réduit le mieux la pression ?",choices:[{text:"« Je vous propose deux endroits calmes. Vous pouvez choisir où attendre un médiateur. »",correct:true,feedback:"Oui. La phrase pose un cadre, propose un choix et prépare un relais sans accusation."},{text:"« Le premier qui parle aura raison, alors expliquez-moi tout. »",correct:false,feedback:"Chercher immédiatement une version complète entretient la confrontation et place l’adulte en arbitre."},{text:"« Si vous ne vous calmez pas tout de suite, vous serez tous sanctionnés. »",correct:false,feedback:"La menace collective peut humilier et augmenter la tension."}]}
+  },
+  minors:{
+    duration:"14 minutes",level:"Protection",audiences:["Jeune","Parent","Médiateur","Association"],title:"Accueillir la parole d’un mineur en sécurité",
+    intro:"Écouter une inquiétude sans mener d’interrogatoire, sans exposer l’identité du jeune et sans promettre un secret impossible à tenir.",
+    objectives:["Créer un échange sans pression ni jugement.","Expliquer clairement les limites de confidentialité.","Orienter avec l’accord du jeune dès que la situation le permet."],
+    sections:[
+      {title:"1. Écouter sans faire répéter",body:"Commencez par une question ouverte puis laissez des silences. Ne demandez pas de preuve, de vidéo ou de récit détaillé. La répétition peut être éprouvante et altérer les informations utiles.",key:"« Qu’est-ce qui t’aiderait maintenant ? » ouvre davantage que « Raconte-moi tout »."},
+      {title:"2. Annoncer les limites de confidentialité",body:"Expliquez avant toute transmission ce qui sera partagé, avec qui et pourquoi. En cas de danger grave ou immédiat, dites clairement qu’un adulte habilité devra être mobilisé.",key:"Ne jamais promettre : « Je ne le dirai à personne »."},
+      {title:"3. Redonner du choix",body:"Lorsque la sécurité le permet, proposez plusieurs personnes ou lieux de confiance. Vérifiez que le jeune comprend la prochaine étape et qu’il sait comment reprendre contact.",key:"Le jeune doit rester acteur de l’orientation, pas devenir un dossier."}
+    ],
+    protocolTitle:"Repères ÉCOUTE",protocol:["É — Éloigner du danger immédiat.","C — Clarifier le besoin du moment.","O — Offrir une écoute sans interrogatoire.","U — Utiliser le minimum d’informations identifiantes.","T — Transmettre seulement au référent nécessaire.","E — Expliquer la suite et vérifier l’accord."],
+    do:["Utiliser les mots du jeune sans les dramatiser.","Noter seulement les éléments nécessaires à sa protection."],
+    avoid:["Contacter publiquement le groupe ou l’auteur présumé.","Demander au jeune de retourner sur place pour confirmer."],
+    quiz:{context:"Une jeune dit qu’un ami a peur de rentrer chez lui mais refuse de donner son nom.",question:"Quelle réponse est adaptée ?",choices:[{text:"« Tu n’as pas besoin de donner son nom maintenant. Voyons d’abord comment il peut rejoindre un adulte ou un lieu sûr. »",correct:true,feedback:"Correct. La réponse traite le besoin de sécurité sans forcer l’identité et prépare une orientation."},{text:"« Sans son nom et une preuve, je ne peux rien faire. »",correct:false,feedback:"Une mise à l’abri ou un conseil ne doit pas dépendre d’une preuve ou d’une identité complète."},{text:"« Donne-moi son adresse, je vais aller vérifier moi-même. »",correct:false,feedback:"Collecter une adresse et intervenir seul expose le jeune comme l’adulte."}]}
+  },
+  rumor:{
+    duration:"11 minutes",level:"Prévention numérique",audiences:["Tous"],title:"Freiner une rumeur et un appel au rassemblement",
+    intro:"Réduire la vitesse de propagation d’un contenu inquiétant sans se transformer en enquêteur ni amplifier le message en voulant le démentir.",
+    objectives:["Repérer les mécanismes de pression au partage.","Conserver uniquement le minimum utile.","Choisir un canal de vérification privé et responsable."],
+    sections:[
+      {title:"1. Reconnaître la pression",body:"L’urgence artificielle, l’absence de source originale, l’appel à rejoindre un lieu et la demande de repartager sont des signaux de risque. Ils imposent une pause, pas une réponse publique.",key:"Plus un message exige une réaction rapide, plus il faut ralentir."},
+      {title:"2. Ne pas amplifier en corrigeant",body:"Commenter, citer ou republier pour contredire peut exposer le contenu à de nouvelles personnes. Préférez un signalement privé au modérateur ou à un référent.",key:"Couper la chaîne est souvent plus efficace que gagner un débat."},
+      {title:"3. Minimiser la conservation",body:"Si un référent demande un élément, conservez la source, l’heure et le contexte minimal. Masquez les identités de mineurs et supprimez les copies devenues inutiles.",key:"Une capture n’a pas vocation à circuler dans plusieurs groupes."}
+    ],
+    protocolTitle:"Méthode STOP",protocol:["S — Suspendre tout partage ou commentaire public.","T — Trouver la source originale si elle est accessible sans enquête.","O — Orienter le contenu vers un canal privé modéré.","P — Protéger les identités et supprimer les copies inutiles."],
+    do:["Prévenir en privé la personne qui vous a envoyé le contenu.","Attendre une source institutionnelle ou un référent identifié."],
+    avoid:["Publier une capture pour demander si elle est vraie.","Répondre publiquement à un appel au rassemblement."],
+    quiz:{context:"Une capture sans source annonce une bagarre à la sortie d’un établissement et demande de venir.",question:"Quel réflexe limite le mieux le risque ?",choices:[{text:"Ne pas transférer, garder le minimum utile et prévenir un référent en privé.",correct:true,feedback:"Exact. Vous interrompez la diffusion tout en permettant une vérification protégée."},{text:"La republier avec la mention « probablement faux ».",correct:false,feedback:"La republication augmente malgré tout la portée du message et de l’appel au rassemblement."},{text:"Répondre dans le groupe pour demander qui participera.",correct:false,feedback:"Cette question peut faciliter la mobilisation et exposer davantage de personnes."}]}
+  },
+  refuge:{
+    duration:"13 minutes",level:"Protocole terrain",audiences:["Commerçant","Association","Médiateur"],title:"Tenir un lieu refuge sans mettre l’équipe en danger",
+    intro:"Accueillir temporairement une personne, protéger la continuité du lieu et organiser un relais sans transformer le commerce ou l’association en poste d’intervention.",
+    objectives:["Préparer un espace d’accueil visible et calme.","Répartir les rôles dans l’équipe.","Organiser une sortie ou un relais sécurisé."],
+    sections:[
+      {title:"1. Préparer avant l’incident",body:"Identifiez l’espace d’attente, les deux contacts de référence, les horaires réels et la procédure si le lieu doit fermer. Toute l’équipe doit savoir qu’elle ne sort jamais intervenir.",key:"Un refuge fiable repose sur une procédure simple, connue avant l’urgence."},
+      {title:"2. Accueillir sans interroger",body:"Présentez-vous, installez la personne dans un espace visible de l’équipe et demandez uniquement son besoin immédiat. N’exigez ni achat, ni identité, ni preuve.",key:"Accueillir n’est pas enquêter."},
+      {title:"3. Passer le relais et clôturer",body:"Avec l’accord de la personne lorsque possible, contactez le référent prévu. Notez seulement l’heure et le type d’orientation. Après le départ, vérifiez l’équipe et signalez tout dysfonctionnement du protocole.",key:"La clôture protège la personne accueillie et améliore le dispositif."}
+    ],
+    protocolTitle:"Protocole REFUGE",protocol:["R — Recevoir la personne sans condition.","E — Éloigner des accès et maintenir une sortie sûre.","F — Faire préciser le besoin immédiat, sans récit complet.","U — Utiliser la chaîne de contacts convenue.","G — Garder l’équipe à l’intérieur et ne confronter personne.","E — Enregistrer seulement la trace opérationnelle minimale."],
+    do:["Afficher uniquement une disponibilité générale et à jour.","Prévoir un mot-code interne pour mobiliser un collègue."],
+    avoid:["Sortir constater la situation ou poursuivre quelqu’un.","Photographier la personne accueillie ou publier sa présence."],
+    quiz:{context:"Une personne entre, inquiète, et demande à rester quelques minutes.",question:"Quelle séquence respecte le rôle du lieu refuge ?",choices:[{text:"L’accueillir au calme, demander son besoin immédiat puis proposer le contact prévu avec son accord.",correct:true,feedback:"Oui. La sécurité et le choix de la personne guident l’accueil, sans enquête ni exposition."},{text:"Demander une pièce d’identité avant de la laisser entrer.",correct:false,feedback:"L’accès temporaire à un lieu sûr ne doit pas dépendre d’une identité ou d’un achat."},{text:"Sortir voir qui la suit pendant qu’un collègue la questionne.",correct:false,feedback:"L’équipe ne doit pas se diviser ni sortir confronter une situation extérieure."}]}
+  },
+  governance:{
+    duration:"16 minutes",level:"Professionnel",audiences:["Médiateur","Association","Collectivité"],title:"Décider avec des données sensibles et agrégées",
+    intro:"Organiser la qualification, les habilitations et la conservation des informations sans automatiser une décision défavorable ni exposer un quartier ou une personne.",
+    objectives:["Appliquer le besoin d’en connaître à chaque accès.","Distinguer donnée opérationnelle et information publique agrégée.","Documenter une décision humaine et sa durée de conservation."],
+    sections:[
+      {title:"1. Finalité et minimisation",body:"Chaque donnée doit répondre à une finalité précise : qualifier, orienter, protéger ou évaluer. Une information utile à une intervention ne devient pas automatiquement utile à une statistique ou à une communication publique.",key:"La bonne question n’est pas « peut-on la garder ? », mais « pourquoi est-elle encore nécessaire ? »."},
+      {title:"2. Habilitations et traçabilité",body:"Les accès professionnels doivent être limités par rôle, justifiés par un dossier et journalisés. Une carte publique reste agrégée ; l’ouverture d’un détail sensible doit laisser une trace contrôlable.",key:"Aucun accès sensible sans rôle, motif et historique."},
+      {title:"3. Décision humaine et recours",body:"Un score, un nombre de signalements ou un rapprochement technique ne doit jamais désigner automatiquement une personne ou un secteur comme dangereux. Toute limitation doit être expliquée, révisable et contestable.",key:"L’indicateur aide à prioriser ; il ne remplace ni l’analyse ni le contradictoire."}
+    ],
+    protocolTitle:"Contrôle 5D",protocol:["Destination — finalité exacte de la donnée.","Détail — niveau minimal nécessaire.","Droit — rôle autorisé à consulter ou modifier.","Durée — échéance de révision ou suppression.","Décision — personne responsable et possibilité de recours."],
+    do:["Séparer les données d’identité, de position et de contenu.","Réexaminer régulièrement les habilitations et les durées."],
+    avoid:["Publier un classement de quartiers ou de personnes.","Exporter des données sensibles sans finalité, filtre et journal."],
+    quiz:{context:"Trois signalements similaires concernent le même secteur en une heure.",question:"Quelle décision est responsable ?",choices:[{text:"Rapprocher les dossiers pour examen humain, vérifier les accès et conserver une zone agrégée publiquement.",correct:true,feedback:"Correct. Le rapprochement aide la qualification sans créer de conclusion automatique ni exposer de position précise."},{text:"Classer immédiatement le secteur comme dangereux et publier les détails.",correct:false,feedback:"Le volume seul ne justifie ni un classement public ni l’exposition de données sensibles."},{text:"Bloquer automatiquement tous les comptes concernés.",correct:false,feedback:"Une mesure défavorable doit être proportionnée, expliquée et revue par une personne habilitée."}]}
+  }
+};
+
+const defaultDemoAlerts=[
+  {id:"s1",tone:"amber",kicker:"À corroborer · 35 min",title:"Tensions verbales",zone:"Secteur Sentes · zone 300 m",count:2},
+  {id:"s2",tone:"blue",kicker:"Médiation en cours",title:"Différend entre groupes",zone:"Secteur Bruyères · zone 500 m",count:4},
+  {id:"s3",tone:"green",kicker:"Surveillance préventive",title:"Rumeur numérique",zone:"Secteur Nord",count:1}
+];
+
+const demoScenarios={
+  calm:{label:"Quartier calme",role:"Habitant",score:88,scoreLabel:"Sereine",indexContext:"Scénario · quartier calme",subtitle:"La situation est stable. Testez les actions de prévention et les activités locales.",heroText:"Un seul signal faible reste suivi et deux actions de proximité sont proposées aujourd’hui.",stats:["1","2","−18%"],alerts:[defaultDemoAlerts[2]]},
+  vigilance:{label:"Vigilance",role:"Parent",score:67,scoreLabel:"Vigilance",indexContext:"Scénario · vigilance",subtitle:"Plusieurs informations restent à confirmer. Aucun déplacement n’est demandé.",heroText:"Deux signaux sont examinés. Les habitants sont invités à ne pas relayer d’informations non confirmées.",stats:["2","2","+6%"],alerts:[defaultDemoAlerts[0],defaultDemoAlerts[2]]},
+  tension:{label:"Tension localisée",role:"Médiateur",score:42,scoreLabel:"Tension",indexContext:"Scénario · tension localisée",subtitle:"Une tension évolutive exige une qualification professionnelle et une coordination à distance.",heroText:"Trois signaux convergent vers une même zone. La priorité reste la mise à distance et le relais humain.",stats:["3","4","+24%"],alerts:[{...defaultDemoAlerts[0],tone:"danger",kicker:"Priorité haute · 8 min",count:6},defaultDemoAlerts[1],defaultDemoAlerts[2]]},
+  intervention:{label:"Intervention en cours",role:"Médiateur",score:58,scoreLabel:"Mobilisation",indexContext:"Scénario · intervention",subtitle:"Une équipe de médiation est mobilisée. Testez le suivi professionnel et la coordination.",heroText:"Une intervention est en route, un lieu sûr est disponible et le canal opérationnel reste actif.",stats:["2","5","−4%"],alerts:[defaultDemoAlerts[1],defaultDemoAlerts[0]]},
+  offline:{label:"Connexion limitée",role:"Association",score:72,scoreLabel:"Prudence",indexContext:"Scénario · hors connexion",subtitle:"Le réseau est simulé indisponible pour tester les consignes et les brouillons locaux.",heroText:"Les informations affichées sont celles du dernier état disponible. Aucun envoi réel n’est effectué.",stats:["2","1","—"],alerts:[defaultDemoAlerts[0],defaultDemoAlerts[2]],offline:true}
 };
 
 const safetyLanguages={
@@ -93,8 +187,9 @@ const safetyLanguages={
 const defaultPreferences={twoFactor:false,statusNotifications:true,activityNotifications:true,discreetNotifications:true,quietFrom:"21:00",quietTo:"07:30",textSize:"normal",highContrast:false,reducedMotion:false,simpleLanguage:false,oneHanded:false,focusMode:false,pictogramMode:false,safetyLanguage:"fr",discreetMode:false};
 
 const storedRole=localStorage.getItem("lien-role-v3");
+const storedDemoScenario=localStorage.getItem("lien-demo-scenario");
 const allowedViews=new Set(["home","map","channels","profile","intervention","admin"]);
-const state={view:"home",role:roles[storedRole]?storedRole:"Parent",onboardStep:1,onboardRole:null,reportStep:1,report:{type:null,attachments:[],minor:false},channel:"quartier",activeSignal:"s1",reviewItem:null,reportedMessage:null,sosTimer:null,sosCount:5,audioRecorder:null,audioStream:null,audioStartedAt:null,preferences:readPreferences(),safetyPlan:readSafetyPlan(),notificationsRead:localStorage.getItem("lien-notifications-read")==="true",safeAvailable:localStorage.getItem("lien-safe-available")!=="false",operatorAvailable:true,selectedOutcome:null,activeCourse:null,deferredInstall:null};
+const state={view:"home",role:roles[storedRole]?storedRole:"Parent",onboardStep:1,onboardRole:null,reportStep:1,report:{type:null,attachments:[],minor:false},channel:"quartier",activeSignal:"s1",reviewItem:null,reportedMessage:null,sosTimer:null,sosCount:5,audioRecorder:null,audioStream:null,audioStartedAt:null,preferences:readPreferences(),safetyPlan:readSafetyPlan(),notificationsRead:localStorage.getItem("lien-notifications-read")==="true",safeAvailable:localStorage.getItem("lien-safe-available")!=="false",operatorAvailable:true,selectedOutcome:null,activeCourse:null,courseValidated:false,demoScenario:demoScenarios[storedDemoScenario]?storedDemoScenario:null,resetDemoArmed:false,deferredInstall:null};
 let nativeTileMapReady=false;
 let activeMapFilter="all";
 
@@ -129,7 +224,7 @@ function renderOfflinePlan(){
 }
 
 function updateNetworkStatus(){
-  const online=navigator.onLine;const banner=q("[data-network-status]");banner.hidden=online;banner.classList.toggle("online",online);q("[data-network-title]").textContent=online?"Connexion rétablie":"Mode hors connexion";q("[data-network-text]").textContent=online?"Les éléments préparés peuvent être repris.":"Les consignes et votre plan restent disponibles.";
+  const online=navigator.onLine;const banner=q("[data-network-status]");banner.hidden=online;banner.classList.remove("offline");banner.classList.toggle("online",online);q("[data-network-title]").textContent=online?"Connexion rétablie":"Mode hors connexion";q("[data-network-text]").textContent=online?"Les éléments préparés peuvent être repris.":"Les consignes et votre plan restent disponibles.";
   const card=q(".offline-state");if(card){card.classList.toggle("offline",!online);q("[data-offline-title]").textContent=online?"Connexion disponible":"Vous êtes hors connexion";q("[data-offline-text]").textContent=online?"Le kit reste prêt si le réseau disparaît.":"Aucune donnée n’est envoyée ; les actions restent locales."}
 }
 
@@ -150,11 +245,65 @@ function renderTrainingScenario(name){
 function completedCourses(){try{const value=JSON.parse(localStorage.getItem("lien-courses")||"[]");return Array.isArray(value)?value:[]}catch{return[]}}
 
 function renderCourses(){
-  const completed=completedCourses();q("[data-course-list]").innerHTML=Object.entries(courseData).map(([id,course],index)=>`<button data-course="${id}"><span>${String(index+1).padStart(2,"0")}</span><div><strong>${escapeHTML(course.title)}</strong><small>${escapeHTML(course.tag)}</small></div><b class="course-status ${completed.includes(id)?"done":""}">${completed.includes(id)?"Terminé":"À découvrir"}</b></button>`).join("");q("[data-course-list]").hidden=false;q("[data-course-detail]").hidden=true;
+  const completed=completedCourses(),total=Object.keys(courseData).length,progress=Math.round(completed.length/total*100);
+  q("[data-course-list]").innerHTML=Object.entries(courseData).map(([id,course],index)=>{
+    const recommended=course.audiences.includes("Tous")||course.audiences.includes(state.role);
+    return `<button data-course="${id}"><span>${String(index+1).padStart(2,"0")}</span><div><strong>${escapeHTML(course.title)}</strong><small>${escapeHTML(course.duration)} · ${escapeHTML(course.level)}</small>${recommended?`<em>Recommandé pour ${escapeHTML(state.role)}</em>`:""}</div><b class="course-status ${completed.includes(id)?"done":""}">${completed.includes(id)?"Validé":"Ouvrir"}</b></button>`
+  }).join("");
+  q("[data-course-list]").hidden=false;q("[data-course-detail]").hidden=true;
+  q("[data-course-progress]").textContent=`${completed.length} module${completed.length>1?"s":""} validé${completed.length>1?"s":""} sur ${total}`;
+  q("[data-course-progress-bar]").style.width=`${progress}%`;
 }
 
 function openCourse(id){
-  const course=courseData[id];if(!course)return;state.activeCourse=id;q("[data-course-list]").hidden=true;q("[data-course-detail]").hidden=false;q("[data-course-tag]").textContent=course.tag;q("[data-course-title]").textContent=course.title;q("[data-course-intro]").textContent=course.intro;q("[data-course-points]").innerHTML=course.points.map(point=>`<li>${escapeHTML(point)}</li>`).join("");q('[data-action="complete-course"]').textContent=completedCourses().includes(id)?"Terminé sur cet appareil ✓":"Marquer comme terminé";
+  const course=courseData[id];if(!course)return;state.activeCourse=id;state.courseValidated=false;q("[data-course-list]").hidden=true;q("[data-course-detail]").hidden=false;
+  q("[data-course-tag]").textContent=`${course.level} · ${course.duration}`;q("[data-course-title]").textContent=course.title;q("[data-course-intro]").textContent=course.intro;q("[data-course-audience]").textContent=course.audiences.includes("Tous")?"Tous les rôles":course.audiences.join(" · ");
+  q("[data-course-objectives]").innerHTML=course.objectives.map(item=>`<li>${escapeHTML(item)}</li>`).join("");
+  q("[data-course-sections]").innerHTML=course.sections.map(section=>`<article><h4>${escapeHTML(section.title)}</h4><p>${escapeHTML(section.body)}</p><span><svg><use href="#i-star"/></svg>${escapeHTML(section.key)}</span></article>`).join("");
+  q("[data-course-protocol-title]").textContent=course.protocolTitle;q("[data-course-protocol]").innerHTML=course.protocol.map((item,index)=>`<li><b>${index+1}</b><span>${escapeHTML(item)}</span></li>`).join("");
+  q("[data-course-do]").innerHTML=course.do.map(item=>`<li>${escapeHTML(item)}</li>`).join("");q("[data-course-avoid]").innerHTML=course.avoid.map(item=>`<li>${escapeHTML(item)}</li>`).join("");q("[data-course-quiz-context]").textContent=course.quiz.context;q("[data-course-quiz-question]").textContent=course.quiz.question;
+  resetCourseQuiz();q('[data-sheet="learning"]').scrollTo({top:0,behavior:"smooth"});
+}
+
+function resetCourseQuiz(){
+  const course=courseData[state.activeCourse];if(!course)return;state.courseValidated=false;q("[data-course-choices]").innerHTML=course.quiz.choices.map((choice,index)=>`<button data-course-choice="${index}">${escapeHTML(choice.text)}</button>`).join("");q("[data-course-feedback]").hidden=true;q('[data-action="course-quiz-reset"]').hidden=true;
+  const completed=completedCourses().includes(state.activeCourse),complete=q('[data-action="complete-course"]');complete.disabled=!completed;complete.textContent=completed?"Module déjà validé ✓":"Répondez à la mise en situation";
+}
+
+function evaluateCourseChoice(index){
+  const course=courseData[state.activeCourse],choice=course?.quiz.choices[index];if(!choice)return;qa("[data-course-choice]").forEach(button=>{button.disabled=true});const selected=q(`[data-course-choice="${index}"]`);selected.classList.add(choice.correct?"correct":"wrong");const feedback=q("[data-course-feedback]");feedback.innerHTML=`<strong>${choice.correct?"Décision adaptée":"À reprendre"}</strong><span>${escapeHTML(choice.feedback)}</span>`;feedback.hidden=false;state.courseValidated=choice.correct;
+  const complete=q('[data-action="complete-course"]');if(choice.correct){complete.disabled=false;complete.textContent="Valider ce module"}else q('[data-action="course-quiz-reset"]').hidden=false;
+}
+
+function renderScenarioAlerts(alerts=defaultDemoAlerts){
+  q("[data-alert-strip]").innerHTML=alerts.map(alert=>`<button class="alert-card ${escapeHTML(alert.tone)}" data-signal-id="${escapeHTML(alert.id)}"><span class="signal-dot"></span><span><small>${escapeHTML(alert.kicker)}</small><strong>${escapeHTML(alert.title)}</strong><em>${escapeHTML(alert.zone)}</em></span><b>${escapeHTML(alert.count)}</b><svg><use href="#i-chevron"/></svg></button>`).join("");
+}
+
+function renderTesterCenter(){
+  const missions={role:localStorage.getItem("lien-test-role-visited")==="true",scenario:localStorage.getItem("lien-test-scenario-visited")==="true",report:localStorage.getItem("lien-test-report-visited")==="true"};
+  qa("[data-test-mission]").forEach(item=>{const done=missions[item.dataset.testMission];item.classList.toggle("done",done);q("[data-test-mission-status]",item).textContent=done?"Testé ✓":"À tester"});
+  qa("[data-demo-scenario]").forEach(button=>button.classList.toggle("active",button.dataset.demoScenario===state.demoScenario));
+  const count=Object.values(missions).filter(Boolean).length;q("[data-test-progress]").textContent=`${count}/3 missions explorées`;
+  q("[data-test-scenario-label]").textContent=state.demoScenario?demoScenarios[state.demoScenario].label:"Choisir un scénario";
+}
+
+function markTestMission(name){localStorage.setItem(`lien-test-${name}-visited`,"true");renderTesterCenter()}
+
+function openTesterCenter(){localStorage.setItem("lien-tester-seen","true");state.resetDemoArmed=false;renderTesterCenter();const reset=q('[data-action="reset-demo"]');reset.classList.remove("armed");reset.innerHTML='<svg><use href="#i-close"/></svg> Réinitialiser toutes les données de test';openSheet("tester")}
+
+function clearDemoScenario(){
+  state.demoScenario=null;localStorage.removeItem("lien-demo-scenario");delete document.body.dataset.activeDemoScenario;renderScenarioAlerts();const values=["3","2","−12%"];qa("[data-scenario-stat]").forEach((element,index)=>element.textContent=values[index]);q("[data-test-scenario-label]").textContent="Choisir un scénario";updateNetworkStatus();
+}
+
+function applyDemoScenario(id,{persist=true,setRole=true,announce=true}={}){
+  const scenario=demoScenarios[id];if(!scenario)return;if(setRole&&scenario.role&&state.role!==scenario.role)applyRole(scenario.role);state.demoScenario=id;document.body.dataset.activeDemoScenario=id;if(persist){localStorage.setItem("lien-demo-scenario",id);localStorage.setItem("lien-test-scenario-visited","true")}
+  q("[data-score]").textContent=scenario.score;q("[data-score-sheet]").textContent=scenario.score;q("[data-score-label]").textContent=scenario.scoreLabel;q(".score-progress").style.strokeDashoffset=358*(1-scenario.score/100);q('[data-user="subtitle"]').textContent=scenario.subtitle;q('[data-user="heroText"]').textContent=scenario.heroText;q("[data-index-context]").textContent=scenario.indexContext;qa("[data-scenario-stat]").forEach((element,index)=>element.textContent=scenario.stats[index]);renderScenarioAlerts(scenario.alerts);
+  if(scenario.offline){const card=q("[data-network-status]");card.hidden=false;card.classList.add("offline");q("[data-network-title]").textContent="Simulation hors connexion";q("[data-network-text]").textContent="Aucune transmission réelle · données locales uniquement"}else updateNetworkStatus();renderTesterCenter();if(announce){closeSheets();setView("home");showToast(`Scénario « ${scenario.label} » activé.`)}
+}
+
+function resetDemoData(){
+  const reset=q('[data-action="reset-demo"]');if(!state.resetDemoArmed){state.resetDemoArmed=true;reset.classList.add("armed");reset.textContent="Confirmer la réinitialisation";showToast("Appuyez une seconde fois pour effacer les données locales de test.");return}
+  Object.keys(localStorage).filter(key=>key.startsWith("lien-")).forEach(key=>localStorage.removeItem(key));location.replace(`${location.pathname}?reset=1`);
 }
 
 function updateInstallUI(installed=false){
@@ -215,6 +364,7 @@ function setView(view){
   if(view==="admin"&&!access.includes("admin"))view="home";
   state.view=view;qa("[data-view]").forEach(panel=>panel.classList.toggle("active",panel.dataset.view===view));
   qa("[data-view-link]").forEach(button=>button.classList.toggle("active",button.dataset.viewLink===view));
+  q(".test-mode-bar").hidden=view!=="home";
   window.scrollTo({top:0,behavior:"smooth"});
   if(view==="map")requestAnimationFrame(initializeTerritoryMap);
 }
@@ -348,7 +498,7 @@ function submitSignalComment(){
 function runRoleCommand(command){
   if(command==="contact"){openSheet("contact");return}
   if(command==="young-support"){openSheet("young-help");return}
-  if(command==="report"||command==="minor-report"){resetReport();if(command==="minor-report"){state.report.minor=true;q("[data-report-minor]").checked=true;q("[data-minor-safety]").hidden=false;qa("[data-media]").forEach(button=>button.disabled=true)}openSheet("report");return}
+  if(command==="report"||command==="minor-report"){markTestMission("report");resetReport();if(command==="minor-report"){state.report.minor=true;q("[data-report-minor]").checked=true;q("[data-minor-safety]").hidden=false;qa("[data-media]").forEach(button=>button.disabled=true)}openSheet("report");return}
   if(command==="safe"){activeMapFilter="safe";setView("map");setMapFilterUI("safe");return}
   if(command==="map"){activeMapFilter="all";setView("map");setMapFilterUI("all");return}
   if(command==="admin"||command==="intervention"){setView(command);return}
@@ -402,13 +552,13 @@ function finishIntervention(){
   const intervention=q(".live-intervention"),pill=q(".live-pill",intervention);pill.innerHTML='<i></i> Clôturée';pill.classList.remove("coral");qa(".intervention-timeline span",intervention).forEach(step=>{step.classList.add("done");step.classList.remove("active")});const steps=qa(".intervention-timeline b",intervention);if(steps[3])steps[3].textContent="15:28";if(steps[4])steps[4].textContent="15:34";qa(".intervention-actions button",intervention).forEach(button=>button.disabled=true);closeSheets();showToast(`Intervention clôturée : ${state.selectedOutcome}. Suivi programmé.`);
 }
 
-renderRoles();applyRole(state.role);renderMessages(state.channel);updateSafePlaceUI();updateImpact();renderSafetyPlan();renderCourses();updateNetworkStatus();renderOfflinePlan();updateInstallUI(window.matchMedia?.("(display-mode: standalone)").matches||navigator.standalone===true);
+renderRoles();applyRole(state.role);renderMessages(state.channel);updateSafePlaceUI();updateImpact();renderSafetyPlan();renderCourses();updateNetworkStatus();renderOfflinePlan();updateInstallUI(window.matchMedia?.("(display-mode: standalone)").matches||navigator.standalone===true);if(state.demoScenario)applyDemoScenario(state.demoScenario,{persist:false,setRole:true,announce:false});renderTesterCenter();
 
 qa("[data-view-link]").forEach(button=>button.addEventListener("click",event=>{event.preventDefault();setView(button.dataset.viewLink)}));
 qa("[data-close-sheet]").forEach(button=>button.addEventListener("click",()=>closeSheets()));q("[data-backdrop]").addEventListener("click",()=>closeSheets());
 
 document.addEventListener("click",event=>{
-  const roleChoice=event.target.closest("[data-role-choice]");if(roleChoice){applyRole(roleChoice.dataset.roleChoice);closeSheets();showToast(`Espace ${roleChoice.dataset.roleChoice} activé.`);return}
+  const roleChoice=event.target.closest("[data-role-choice]");if(roleChoice){clearDemoScenario();markTestMission("role");applyRole(roleChoice.dataset.roleChoice);closeSheets();showToast(`Espace ${roleChoice.dataset.roleChoice} activé.`);return}
   const roleQuick=event.target.closest("[data-role-quick]");if(roleQuick){runRoleCommand(roleQuick.dataset.roleCommand);return}
   const signalButton=event.target.closest("[data-signal-id]");if(signalButton){openSignal(signalButton.dataset.signalId);return}
   const outcomeButton=event.target.closest("[data-outcome]");if(outcomeButton){state.selectedOutcome=outcomeButton.dataset.outcome;qa("[data-outcome]").forEach(button=>button.classList.toggle("active",button===outcomeButton));updateInterventionCloseState();return}
@@ -416,9 +566,16 @@ document.addEventListener("click",event=>{
   const scenarioButton=event.target.closest("[data-training-scenario]");if(scenarioButton&&!scenarioButton.dataset.trainingChoice){renderTrainingScenario(scenarioButton.dataset.trainingScenario);return}
   const trainingChoice=event.target.closest("[data-training-choice]");if(trainingChoice){const scenario=trainingScenarios[trainingChoice.dataset.trainingScenarioName],choice=scenario.choices[Number(trainingChoice.dataset.trainingChoice)];qa("[data-training-choice]").forEach(button=>{button.disabled=true});trainingChoice.classList.add(choice.correct?"correct":"wrong");const feedback=q("[data-training-feedback]");feedback.textContent=choice.feedback;feedback.hidden=false;return}
   const courseButton=event.target.closest("[data-course]");if(courseButton){openCourse(courseButton.dataset.course);return}
+  const courseChoice=event.target.closest("[data-course-choice]");if(courseChoice){evaluateCourseChoice(Number(courseChoice.dataset.courseChoice));return}
+  const demoScenario=event.target.closest("[data-demo-scenario]");if(demoScenario){applyDemoScenario(demoScenario.dataset.demoScenario);return}
   const actionButton=event.target.closest("[data-action]");if(!actionButton)return;const action=actionButton.dataset.action;
+  if(action==="test-center")openTesterCenter();
+  if(action==="test-role"){closeSheets();openSheet("roles")}
+  if(action==="test-scenarios")q(".demo-scenarios").scrollIntoView({behavior:"smooth",block:"start"});
+  if(action==="test-report"){markTestMission("report");closeSheets();resetReport();openSheet("report")}
+  if(action==="reset-demo")resetDemoData();
   if(action==="role-picker")openSheet("roles");
-  if(action==="report"){resetReport();openSheet("report")}
+  if(action==="report"){markTestMission("report");resetReport();openSheet("report")}
   if(action==="sos")openSos();if(action==="close-sos")closeSos();if(action==="start-sos")startSos();if(action==="cancel-sos")cancelSos();
   if(action==="contact-mediator"){if(q("[data-sos]").classList.contains("open"))closeSos();openSheet("contact")}
   if(action==="open-private-chat"){closeSheets();setView("channels");renderMessages("parents");showToast("Discussion privée ouverte avec Karim.")}
@@ -435,8 +592,9 @@ document.addEventListener("click",event=>{
   if(action==="install-app")openSheet("install");
   if(action==="training"){q("[data-scenario-list]").hidden=false;q("[data-training-stage]").hidden=true;openSheet("training")}
   if(action==="training-reset"){q("[data-scenario-list]").hidden=false;q("[data-training-stage]").hidden=true}
-  if(action==="learning"){renderCourses();openSheet("learning")}
+  if(action==="learning"){renderCourses();openSheet("learning");return}
   if(action==="course-reset")renderCourses();
+  if(action==="course-quiz-reset")resetCourseQuiz();
   if(action==="toggle-discreet")toggleDiscreetMode();
   if(action==="quick-exit")toggleDiscreetMode(true);
   if(action==="minor-report")runRoleCommand("minor-report");
@@ -490,13 +648,13 @@ document.addEventListener("click",event=>{
   if(action==="clear-safety-plan"){state.safetyPlan=null;localStorage.removeItem("lien-safety-plan");renderSafetyPlan();showToast("Plan personnel supprimé de cet appareil.")}
   if(action==="download-offline-guide"){const plan=state.safetyPlan?`\nMon lieu sûr : ${state.safetyPlan.safePlace}\nContact : ${state.safetyPlan.trustedName||"à définir"}`:"";downloadBlob("lien-kit-hors-connexion.txt",`LIEN — CONSIGNES ESSENTIELLES\n\n1. Éloignez-vous et ne confrontez personne.\n2. Rejoignez un lieu ouvert ou un adulte de confiance.\n3. Utilisez AIDE en cas de danger immédiat.${plan}`);showToast("Mémo hors connexion généré.")}
   if(action==="confirm-install"){if(state.deferredInstall){state.deferredInstall.prompt();state.deferredInstall.userChoice.then(choice=>{if(choice.outcome==="accepted"){updateInstallUI(true);closeSheets();showToast("LIEN a été ajouté à votre appareil.")}state.deferredInstall=null})}else{q("[data-install-help]").textContent="Ouvrez le menu Partager ou le menu du navigateur, puis choisissez « Ajouter à l’écran d’accueil » ou « Installer l’application ».";showToast("Suivez les instructions affichées pour ce navigateur.")}}
-  if(action==="complete-course"&&state.activeCourse){const completed=completedCourses();if(!completed.includes(state.activeCourse)){completed.push(state.activeCourse);localStorage.setItem("lien-courses",JSON.stringify(completed))}actionButton.textContent="Terminé sur cet appareil ✓";showToast("Formation enregistrée sans points ni classement.")}
+  if(action==="complete-course"&&state.activeCourse){const completed=completedCourses();if(!completed.includes(state.activeCourse)&&!state.courseValidated){showToast("Validez d’abord la mise en situation.");return}if(!completed.includes(state.activeCourse)){completed.push(state.activeCourse);localStorage.setItem("lien-courses",JSON.stringify(completed))}actionButton.textContent="Module validé sur cet appareil ✓";actionButton.disabled=true;q("[data-course-progress]").textContent=`${completed.length} module${completed.length>1?"s":""} validé${completed.length>1?"s":""} sur ${Object.keys(courseData).length}`;q("[data-course-progress-bar]").style.width=`${Math.round(completed.length/Object.keys(courseData).length*100)}%`;showToast("Module validé : acquis enregistrés sans score ni classement.")}
   if(action==="read-safety"){const language=safetyLanguages[state.preferences.safetyLanguage]||safetyLanguages.fr;if(!("speechSynthesis" in window)){showToast("La lecture vocale n’est pas disponible sur cet appareil.");return}speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(language.text);utterance.lang=language.lang;q("[data-safety-preview]").classList.add("speaking");utterance.onend=()=>q("[data-safety-preview]").classList.remove("speaking");speechSynthesis.speak(utterance)}
   if(action==="permission-location"||action==="permission-media")showToast("Cette permission sera demandée uniquement au moment nécessaire.");
   if(action==="retention")showToast("Conservation ordinaire : 90 jours maximum, puis suppression automatique.");
   if(action==="access-history")showToast("Aucun accès professionnel inhabituel détecté sur les 30 derniers jours.");
   if(action==="download-data"){downloadBlob("mes-donnees-lien.json",JSON.stringify({role:state.role,reports:readStoredReports(),preferences:state.preferences,safetyPlan:state.safetyPlan,completedCourses:completedCourses()},null,2),"application/json");showToast("Copie de vos données générée.")}
-  if(action==="delete-account"){["lien-role-v3","lien-reports","lien-onboarded-v3","lien-preferences","lien-notifications-read","lien-safe-available","lien-safety-plan","lien-courses","lien-safe-confirmation"].forEach(key=>localStorage.removeItem(key));state.preferences={...defaultPreferences};state.safetyPlan=null;state.notificationsRead=false;applyPreferences();renderSafetyPlan();closeSheets();showToast("Données locales supprimées.");setTimeout(openOnboarding,500)}
+  if(action==="delete-account"){["lien-role-v3","lien-reports","lien-onboarded-v3","lien-preferences","lien-notifications-read","lien-safe-available","lien-safety-plan","lien-courses","lien-safe-confirmation","lien-demo-scenario","lien-tester-seen","lien-test-role-visited","lien-test-scenario-visited","lien-test-report-visited"].forEach(key=>localStorage.removeItem(key));state.preferences={...defaultPreferences};state.safetyPlan=null;state.notificationsRead=false;applyPreferences();renderSafetyPlan();closeSheets();showToast("Données locales supprimées.");setTimeout(openOnboarding,500)}
 });
 
 qa("[data-report-type]").forEach(button=>button.addEventListener("click",()=>{qa("[data-report-type]").forEach(item=>item.classList.remove("selected"));button.classList.add("selected");state.report.type=button.dataset.reportType;q('[data-report-step="1"] [data-report-next]').disabled=false}));
@@ -525,7 +683,7 @@ q("[data-onboard-next]").closest('[data-onboard-step="1"]').querySelector("[data
 q('[data-onboard-step="2"] [data-onboard-next]').addEventListener("click",()=>{if(!state.onboardRole)return;const nameInput=q("[data-onboard-name]");nameInput.value=roles[state.onboardRole].firstName;setOnboardStep(3)});
 q("[data-role-options]").addEventListener("click",event=>{const button=event.target.closest("[data-onboard-role]");if(!button)return;qa("[data-onboard-role]").forEach(item=>item.classList.remove("selected"));button.classList.add("selected");state.onboardRole=button.dataset.onboardRole;q('[data-onboard-step="2"] [data-onboard-next]').disabled=false});
 q("[data-charter]").addEventListener("change",event=>q("[data-onboard-finish]").disabled=!event.target.checked);
-q("[data-onboard-finish]").addEventListener("click",()=>{const role=state.onboardRole||"Parent";const customName=q("[data-onboard-name]").value.trim();applyRole(role,customName||undefined);localStorage.setItem("lien-onboarded-v3","true");closeOnboarding();showToast(`Bienvenue dans votre espace ${role}.`)});
+q("[data-onboard-finish]").addEventListener("click",()=>{const role=state.onboardRole||"Parent";const customName=q("[data-onboard-name]").value.trim();applyRole(role,customName||undefined);localStorage.setItem("lien-onboarded-v3","true");closeOnboarding();showToast(`Bienvenue dans votre espace ${role}.`);if(!localStorage.getItem("lien-tester-seen"))setTimeout(openTesterCenter,500)});
 q("[data-onboard-reset]").addEventListener("click",()=>setOnboardStep(2));
 
 document.addEventListener("keydown",event=>{if(event.key==="Escape"){if(q("[data-sos]").classList.contains("open"))closeSos();else closeSheets()}});
@@ -536,5 +694,5 @@ window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();sta
 window.addEventListener("appinstalled",()=>{state.deferredInstall=null;updateInstallUI(true);showToast("LIEN est installée sur cet appareil.")});
 
 const launch=new URLSearchParams(location.search);if(launch.get("view"))setView(launch.get("view"));if(launch.get("action")==="report")setTimeout(()=>{resetReport();openSheet("report")},150);if(launch.get("action")==="guidance")setTimeout(()=>{resetGuidance();openSheet("guidance")},150);if(launch.get("action")==="offline-kit")setTimeout(()=>{updateNetworkStatus();renderOfflinePlan();openSheet("offline-kit")},150);
-if(!localStorage.getItem("lien-onboarded-v3"))openOnboarding();
+if(!localStorage.getItem("lien-onboarded-v3"))openOnboarding();else if(!localStorage.getItem("lien-tester-seen"))setTimeout(openTesterCenter,500);
 if("serviceWorker" in navigator&&location.protocol!=="file:")window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));

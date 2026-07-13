@@ -44,7 +44,8 @@ Le dépôt est configuré comme site statique Vercel. Chaque push sur la branche
 - parcours guidé d'installation de la PWA ;
 - confirmation « Je suis en sécurité » avec arrêt du partage et demande de suivi ;
 - scénarios d'entraînement sans score ni compétition ;
-- centre de micro-formations avec progression locale privée ;
+- parcours testeur guidé avec trois missions, cinq états prédéfinis et réinitialisation complète des données locales ;
+- centre de formation structuré en six modules opérationnels avec objectifs, méthodes terrain, pratiques à éviter, mises en situation et validation locale privée ;
 - consignes essentielles en français, français facile, anglais et arabe avec lecture vocale ;
 - système visuel LIEN 5.0 : typographie lisible, espacements cohérents, cartes sans chevauchement et zones tactiles adaptées au mobile ;
 - signalement en liste verticale, messagerie plein écran, navigation basse protégée et profil mobile simplifié ;
